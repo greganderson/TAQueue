@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+	public static String BASE_URL = "http://nine.eng.utah.edu";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
