@@ -1,7 +1,5 @@
 package com.familybiz.greg.taqueue.model;
 
-import com.familybiz.greg.taqueue.model.School;
-
 import java.util.ArrayList;
 
 /**
@@ -10,5 +8,4 @@ import java.util.ArrayList;
 public class ClassCollection {
 
 	private ArrayList<School> mSchools;
-
 }
