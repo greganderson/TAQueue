@@ -1,28 +1,24 @@
 package com.familybiz.greg.taqueue;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
+import com.familybiz.greg.taqueue.model.Instructor;
+import com.familybiz.greg.taqueue.model.School;
 import com.familybiz.greg.taqueue.network.NetworkRequest;
+import com.familybiz.greg.taqueue.view.InstructorListFragment;
 import com.familybiz.greg.taqueue.view.SchoolListFragment;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SchoolListFragment.OnSchoolSelectedListener, InstructorListFragment.OnInstructorSelectedListener {
 
 	public static NetworkRequest NETWORK_REQUEST;
 
-	private FrameLayout mSchoolListView;
 	private SchoolListFragment mSchoolListFragment;
+	private InstructorListFragment mInstructorListFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,21 +26,18 @@ public class MainActivity extends Activity {
 
 		NETWORK_REQUEST = new NetworkRequest(this);
 
-		LinearLayout rootLayout = new LinearLayout(this);
-		setContentView(rootLayout);
+		setContentView(R.layout.activity_main);
 
-		mSchoolListView = new FrameLayout(this);
-		// TODO: Figure out better way to do this ID business
-		mSchoolListView.setId(10);
+		// Lists
 
 		mSchoolListFragment = new SchoolListFragment();
+		mSchoolListFragment.setOnSchoolSelectedListener(this);
 
-		rootLayout.addView(mSchoolListView, new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.MATCH_PARENT));
+		mInstructorListFragment = new InstructorListFragment();
+		mInstructorListFragment.setOnInstructorSelectedListener(this);
 
 		FragmentTransaction addTransaction = getFragmentManager().beginTransaction();
-		addTransaction.add(10, mSchoolListFragment);
+		addTransaction.add(R.id.fragment_layout, mSchoolListFragment);
 		addTransaction.commit();
 	}
 
@@ -71,19 +64,15 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
+	@Override
+	public void onSchoolSelected(School school) {
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.fragment_layout, mInstructorListFragment);
+		transaction.commit();
+	}
 
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-		                         Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-			return rootView;
-		}
+	@Override
+	public void onInstructorSelected(Instructor instructor) {
+		// TODO: Implement
 	}
 }
