@@ -8,15 +8,17 @@ import android.view.MenuItem;
 
 import com.familybiz.greg.taqueue.model.Instructor;
 import com.familybiz.greg.taqueue.model.School;
+import com.familybiz.greg.taqueue.model.StudentQueue;
 import com.familybiz.greg.taqueue.network.NetworkRequest;
 import com.familybiz.greg.taqueue.view.InstructorListFragment;
+import com.familybiz.greg.taqueue.view.QueueListFragment;
 import com.familybiz.greg.taqueue.view.SchoolListFragment;
 
 
 /**
  * Created by Greg Anderson
  */
-public class MainActivity extends Activity implements SchoolListFragment.OnSchoolSelectedListener, InstructorListFragment.OnInstructorSelectedListener {
+public class MainActivity extends Activity implements SchoolListFragment.OnSchoolSelectedListener, InstructorListFragment.OnInstructorSelectedListener, QueueListFragment.OnQueueSelectedListener {
 
 	// Global access to the networking class, TODO: Which might be a bad idea
 	public static NetworkRequest NETWORK_REQUEST;
@@ -24,6 +26,7 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 	// Fragments
 	private SchoolListFragment mSchoolListFragment;
 	private InstructorListFragment mInstructorListFragment;
+	private QueueListFragment mQueueListFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,11 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 
 		mInstructorListFragment = new InstructorListFragment();
 		mInstructorListFragment.setOnInstructorSelectedListener(this);
+
+		// Queues
+
+		mQueueListFragment = new QueueListFragment();
+		mQueueListFragment.setOnQueueSelectedListener(this);
 
 		FragmentTransaction addTransaction = getFragmentManager().beginTransaction();
 		addTransaction.add(R.id.fragment_layout, mSchoolListFragment);
@@ -87,6 +95,13 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 	 */
 	@Override
 	public void onInstructorSelected(Instructor instructor) {
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.fragment_layout, mQueueListFragment);
+		transaction.commit();
+	}
+
+	@Override
+	public void onQueueSelected(StudentQueue queue) {
 		// TODO: Implement
 	}
 }
