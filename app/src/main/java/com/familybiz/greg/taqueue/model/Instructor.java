@@ -35,7 +35,7 @@ public class Instructor {
 	/**
 	 * Returns the list of queues as an array.
 	 */
-	public StudentQueue[] getQueue() {
+	public StudentQueue[] getQueues() {
 		return mQueue.toArray(new StudentQueue[mQueue.size()]);
 	}
 }
