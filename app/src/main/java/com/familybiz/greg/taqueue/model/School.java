@@ -14,10 +14,10 @@ public class School {
 	private String mAbbreviation;
 	private ArrayList<Instructor> mInstructors;
 
-	public School(String name, String abbreviation, ArrayList<Instructor> instructors) {
+	public School(String name, String abbreviation) {
 		mName = name;
 		mAbbreviation = abbreviation;
-		mInstructors = instructors;
+		mInstructors = new ArrayList<Instructor>();
 	}
 
 	public String getName() {
@@ -26,6 +26,10 @@ public class School {
 
 	public String getAbbreviation() {
 		return mAbbreviation;
+	}
+
+	public void addInstructor(Instructor instructor) {
+		mInstructors.add(instructor);
 	}
 
 	/**

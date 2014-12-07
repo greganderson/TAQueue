@@ -14,10 +14,10 @@ public class Instructor {
 	private String mUsername;
 	private ArrayList<StudentQueue> mQueue;
 
-	public Instructor(String name, String username, ArrayList<StudentQueue> queue) {
+	public Instructor(String name, String username) {
 		mName = name;
 		mUsername = username;
-		mQueue = queue;
+		mQueue = new ArrayList<StudentQueue>();
 	}
 
 	public String getName() {
@@ -26,6 +26,10 @@ public class Instructor {
 
 	public String getUsername() {
 		return mUsername;
+	}
+
+	public void addQueue(StudentQueue queue) {
+		mQueue.add(queue);
 	}
 
 	/**
