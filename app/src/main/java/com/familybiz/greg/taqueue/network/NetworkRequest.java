@@ -8,6 +8,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -64,6 +65,38 @@ public class NetworkRequest {
 		mQueue.add(stringRequest);
 	}
 
+	public void executePostRequest(String url, JSONObject params) {
+		// TODO: Make the change to using Uri.Builder
+
+		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+				BASE_URL + url,
+				params,
+				new Response.Listener<JSONObject>() {
+					@Override
+					public void onResponse(JSONObject response) {
+						parseResponse(response.toString());
+					}
+				},
+				new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						Log.e("Json Parsing", "Error in parsing the json response.");
+					}
+				}){
+
+			// Set the correct header to prevent getting html back
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				Map<String, String> headers = new HashMap<String, String>();
+				headers.put("Content-Type", "application/json");
+				headers.put("Accept", "application/json");
+				return headers;
+			}
+		};
+
+		mQueue.add(jsonObjectRequest);
+	}
+
 
 	/**
 	 * Parses the HTTP response into either a json object or a json array, logs the error if it
@@ -72,7 +105,7 @@ public class NetworkRequest {
 	private void parseResponse(String response) {
 		// Json array
 		try {
-			JSONArray jsonArray = new JSONArray(response);
+			new JSONArray(response);
 			for (OnJsonArrayReceivedListener listener : mOnJsonArrayReceivedListeners)
 				listener.onJsonArrayReceived(response);
 		}
@@ -80,7 +113,7 @@ public class NetworkRequest {
 
 			// Json object
 			try {
-				JSONObject jsonObject = new JSONObject(response);
+				new JSONObject(response);
 				for (OnJsonObjectReceivedListener listener : mOnJsonObjectReceivedListeners)
 					listener.onJsonObjectReceived(response);
 			}
