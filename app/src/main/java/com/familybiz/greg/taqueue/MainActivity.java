@@ -8,24 +8,57 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.familybiz.greg.taqueue.network.NetworkRequest;
+
+import org.json.JSONArray;
+
 
 public class MainActivity extends Activity {
-
-	public static String BASE_URL = "http://nine.eng.utah.edu";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		LinearLayout rootLayout = new LinearLayout(this);
-		rootLayout.setOrientation(LinearLayout.HORIZONTAL);
+		final NetworkRequest networkRequest = new NetworkRequest(this);
 
-		TextView v = new TextView(this);
+		LinearLayout rootLayout = new LinearLayout(this);
+		rootLayout.setOrientation(LinearLayout.VERTICAL);
+
+		final TextView v = new TextView(this);
 		v.setText("Hi there!");
-		rootLayout.addView(v, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+		rootLayout.addView(v, new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				1));
+
+
+		Button b = new Button(this);
+		b.setText("Execute get");
+		rootLayout.addView(b, new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				1));
+
+
+		b.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				networkRequest.executeGetRequest("");
+			}
+		});
+
+
+
+		networkRequest.addOnJsonArrayReceivedListener(new NetworkRequest.OnJsonArrayReceivedListener() {
+			@Override
+			public void onJsonArrayReceived(JSONArray jsonArray) {
+				v.setText(jsonArray.toString());
+			}
+		});
 
 		setContentView(rootLayout);
 	}
