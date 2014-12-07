@@ -70,12 +70,11 @@ public class NetworkRequest {
 	 * fails.  Once parsed, it will trigger all appropriate listeners.
 	 */
 	private void parseResponse(String response) {
-
 		// Json array
 		try {
 			JSONArray jsonArray = new JSONArray(response);
 			for (OnJsonArrayReceivedListener listener : mOnJsonArrayReceivedListeners)
-				listener.onJsonArrayReceived(jsonArray);
+				listener.onJsonArrayReceived(response);
 		}
 		catch (JSONException e) {
 
@@ -83,7 +82,7 @@ public class NetworkRequest {
 			try {
 				JSONObject jsonObject = new JSONObject(response);
 				for (OnJsonObjectReceivedListener listener : mOnJsonObjectReceivedListeners)
-					listener.onJsonObjectReceived(jsonObject);
+					listener.onJsonObjectReceived(response);
 			}
 			catch (JSONException e1) {
 				Log.e("Json Parsing", "Error in parsing the json response.");
@@ -99,7 +98,7 @@ public class NetworkRequest {
 	// Json object listener
 
 	public interface OnJsonObjectReceivedListener {
-		public void onJsonObjectReceived(JSONObject jsonObject);
+		public void onJsonObjectReceived(String jsonObject);
 	}
 	private Set<OnJsonObjectReceivedListener> mOnJsonObjectReceivedListeners = new HashSet<OnJsonObjectReceivedListener>();
 	public void addOnJsonObjectReceivedListener(OnJsonObjectReceivedListener onJsonObjectReceivedListener) {
@@ -112,7 +111,7 @@ public class NetworkRequest {
 	// Json array listener
 
 	public interface OnJsonArrayReceivedListener {
-		public void onJsonArrayReceived(JSONArray jsonArray);
+		public void onJsonArrayReceived(String jsonArray);
 	}
 	private Set<OnJsonArrayReceivedListener> mOnJsonArrayReceivedListeners = new HashSet<OnJsonArrayReceivedListener>();
 	public void addOnJsonArrayReceivedListener(OnJsonArrayReceivedListener onJsonArrayReceivedListener) {
