@@ -72,7 +72,7 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 	}
 
 	/**
-	 * Switches the fragment to the selected instructor.
+	 * Switches the fragment to the list of instructors for the selected school.
 	 */
 	@Override
 	public void onSchoolSelected(School school) {
@@ -81,6 +81,10 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 		transaction.commit();
 	}
 
+	/**
+	 * Switches the fragment to the list of classes for the selected instructor.
+	 * @param instructor
+	 */
 	@Override
 	public void onInstructorSelected(Instructor instructor) {
 		// TODO: Implement
