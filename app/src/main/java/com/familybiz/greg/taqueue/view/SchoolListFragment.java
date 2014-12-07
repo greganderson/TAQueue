@@ -1,52 +1,30 @@
 package com.familybiz.greg.taqueue.view;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 
-import com.familybiz.greg.taqueue.R;
 import com.familybiz.greg.taqueue.model.School;
 import com.familybiz.greg.taqueue.network.SchoolRequest;
 
 /**
  * Created by Greg Anderson
  */
-public class SchoolListFragment extends Fragment {
+public class SchoolListFragment extends ListFragment {
 
 	private SchoolRequest mSchoolRequest;
-	private ArrayAdapter<String> mArrayAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSchoolRequest = new SchoolRequest();
 
-		LinearLayout rootLayout = new LinearLayout(getActivity());
-		rootLayout.setOrientation(LinearLayout.VERTICAL);
-
-		mArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.school_list);
-
-		ListView listView = new ListView(getActivity());
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-				String item = mArrayAdapter.getItem(i);
-				mArrayAdapter.add(item);
-			}
-		});
-		listView.setAdapter(mArrayAdapter);
-		rootLayout.addView(listView, new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.MATCH_PARENT));
-
 		mSchoolRequest.setOnSchoolsReceivedListener(new SchoolRequest.OnSchoolsReceivedListener() {
 			@Override
 			public void onSchoolsReceived(School[] schools) {
+				mSchools = schools;
+
+				// Update the list of schools
 				mArrayAdapter.clear();
 				String[] names = new String[schools.length];
 				for (int i = 0; i < names.length; i++)
@@ -58,6 +36,41 @@ public class SchoolListFragment extends Fragment {
 		// Populate the list
 		mSchoolRequest.populateSchoolData();
 
-		return rootLayout;
+		return super.onCreateView(inflater, container, savedInstanceState);
+	}
+
+
+	/**
+	 * Finds the school with the given name and returns it.  Returns null if it doesn't exist.
+	 */
+	@Override
+	Object getSelectedItem(String name) {
+		for (School school : mSchools) {
+			if (school.getName().equals(name)) {
+				mSelectedSchool = school;
+				return school;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	void itemSelectedListener(Object school) {
+		if (mOnSchoolSelectedListener != null)
+			mOnSchoolSelectedListener.onSchoolSelected((School)school);
+	}
+
+
+	/***************************** LISTENERS *****************************/
+
+
+	// School selected
+
+	public interface OnSchoolSelectedListener {
+		public void onSchoolSelected(School school);
+	}
+	private OnSchoolSelectedListener mOnSchoolSelectedListener;
+	public void setOnSchoolSelectedListener(OnSchoolSelectedListener onSchoolSelectedListener) {
+		mOnSchoolSelectedListener = onSchoolSelectedListener;
 	}
 }
