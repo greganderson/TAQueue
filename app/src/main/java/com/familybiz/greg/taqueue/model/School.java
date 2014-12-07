@@ -38,4 +38,9 @@ public class School {
 	public Instructor[] getInstructors() {
 		return mInstructors.toArray(new Instructor[mInstructors.size()]);
 	}
+
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

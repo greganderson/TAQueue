@@ -2,65 +2,50 @@ package com.familybiz.greg.taqueue;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.familybiz.greg.taqueue.network.NetworkRequest;
-
-import org.json.JSONArray;
+import com.familybiz.greg.taqueue.view.SchoolListFragment;
 
 
 public class MainActivity extends Activity {
+
+	public static NetworkRequest NETWORK_REQUEST;
+
+	private FrameLayout mSchoolListView;
+	private SchoolListFragment mSchoolListFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		final NetworkRequest networkRequest = new NetworkRequest(this);
+		NETWORK_REQUEST = new NetworkRequest(this);
 
 		LinearLayout rootLayout = new LinearLayout(this);
-		rootLayout.setOrientation(LinearLayout.VERTICAL);
-
-		final TextView v = new TextView(this);
-		v.setText("Hi there!");
-		rootLayout.addView(v, new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				1));
-
-
-		Button b = new Button(this);
-		b.setText("Execute get");
-		rootLayout.addView(b, new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				1));
-
-
-		b.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				networkRequest.executeGetRequest("");
-			}
-		});
-
-
-
-		networkRequest.addOnJsonArrayReceivedListener(new NetworkRequest.OnJsonArrayReceivedListener() {
-			@Override
-			public void onJsonArrayReceived(JSONArray jsonArray) {
-				v.setText(jsonArray.toString());
-			}
-		});
-
 		setContentView(rootLayout);
+
+		mSchoolListView = new FrameLayout(this);
+		// TODO: Figure out better way to do this ID business
+		mSchoolListView.setId(10);
+
+		mSchoolListFragment = new SchoolListFragment();
+
+		rootLayout.addView(mSchoolListView, new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT));
+
+		FragmentTransaction addTransaction = getFragmentManager().beginTransaction();
+		addTransaction.add(10, mSchoolListFragment);
+		addTransaction.commit();
 	}
 
 
