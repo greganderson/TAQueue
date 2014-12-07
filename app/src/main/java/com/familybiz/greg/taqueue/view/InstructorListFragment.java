@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import com.familybiz.greg.taqueue.model.Instructor;
 
 /**
+ * Represents the list of instructors for a school.
+ *
  * Created by Greg Anderson
  */
 public class InstructorListFragment extends ListFragment {
@@ -26,6 +28,9 @@ public class InstructorListFragment extends ListFragment {
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
+	/**
+	 * Find the instructor with the given name.  Returns null if it doesn't exist.
+	 */
 	@Override
 	Object getSelectedItem(String name) {
 		for (Instructor instructor : mSelectedSchool.getInstructors()) {

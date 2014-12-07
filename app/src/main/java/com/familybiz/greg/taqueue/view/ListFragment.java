@@ -21,17 +21,19 @@ import com.familybiz.greg.taqueue.model.School;
  */
 public abstract class ListFragment extends Fragment {
 
+	// The array that contains the data displayed in the listview
 	protected static ArrayAdapter<String> mArrayAdapter;
 
-	protected static School[] mSchools;
-	protected static School mSelectedSchool;
-	protected static Instructor mSelectedInstructor;
+	protected static School[] mSchools;                 // List of all schools
+	protected static School mSelectedSchool;            // Current selected school
+	protected static Instructor mSelectedInstructor;    // Current selected instructor
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		LinearLayout rootLayout = new LinearLayout(getActivity());
 		rootLayout.setOrientation(LinearLayout.VERTICAL);
 
+		// Check if list already exists, that way we don't overwrite the current one
 		if (mArrayAdapter == null)
 			mArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item);
 
@@ -53,7 +55,13 @@ public abstract class ListFragment extends Fragment {
 		return rootLayout;
 	}
 
+	/**
+	 * Find and return the item with the given name from where it is stored.
+	 */
 	abstract Object getSelectedItem(String name);
 
+	/**
+	 * Triggers the listener for the selected item.
+	 */
 	abstract void itemSelectedListener(Object o);
 }

@@ -9,10 +9,13 @@ import com.familybiz.greg.taqueue.model.School;
 import com.familybiz.greg.taqueue.network.SchoolRequest;
 
 /**
+ * Represents the list of schools.
+ *
  * Created by Greg Anderson
  */
 public class SchoolListFragment extends ListFragment {
 
+	// Makes a network call to populate the data
 	private SchoolRequest mSchoolRequest;
 
 	@Override
@@ -29,11 +32,12 @@ public class SchoolListFragment extends ListFragment {
 				String[] names = new String[schools.length];
 				for (int i = 0; i < names.length; i++)
 					names[i] = schools[i].toString();
+
 				mArrayAdapter.addAll(names);
 			}
 		});
 
-		// Populate the list
+		// Populate the list and array of schools
 		mSchoolRequest.populateSchoolData();
 
 		return super.onCreateView(inflater, container, savedInstanceState);
@@ -41,7 +45,7 @@ public class SchoolListFragment extends ListFragment {
 
 
 	/**
-	 * Finds the school with the given name and returns it.  Returns null if it doesn't exist.
+	 * Finds the school with the given name.  Returns null if it doesn't exist.
 	 */
 	@Override
 	Object getSelectedItem(String name) {

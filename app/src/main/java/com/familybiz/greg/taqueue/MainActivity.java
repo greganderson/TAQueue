@@ -13,10 +13,15 @@ import com.familybiz.greg.taqueue.view.InstructorListFragment;
 import com.familybiz.greg.taqueue.view.SchoolListFragment;
 
 
+/**
+ * Created by Greg Anderson
+ */
 public class MainActivity extends Activity implements SchoolListFragment.OnSchoolSelectedListener, InstructorListFragment.OnInstructorSelectedListener {
 
+	// Global access to the networking class, TODO: Which might be a bad idea
 	public static NetworkRequest NETWORK_REQUEST;
 
+	// Fragments
 	private SchoolListFragment mSchoolListFragment;
 	private InstructorListFragment mInstructorListFragment;
 
@@ -28,10 +33,12 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 
 		setContentView(R.layout.activity_main);
 
-		// Lists
+		// Schools
 
 		mSchoolListFragment = new SchoolListFragment();
 		mSchoolListFragment.setOnSchoolSelectedListener(this);
+
+		// Instructors
 
 		mInstructorListFragment = new InstructorListFragment();
 		mInstructorListFragment.setOnInstructorSelectedListener(this);
@@ -64,6 +71,9 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * Switches the fragment to the selected instructor.
+	 */
 	@Override
 	public void onSchoolSelected(School school) {
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
