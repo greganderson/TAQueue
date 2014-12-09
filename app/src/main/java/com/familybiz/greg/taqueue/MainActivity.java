@@ -52,8 +52,10 @@ public class MainActivity extends Activity implements
 
 	// Used in saving and reading from file
 	private String USER_TYPE = "user_type";
+	private String USERNAME = "username";
 	private String ID = "id";
 	private String TOKEN = "token";
+	private String LOCATION = "location";
 
 	// Fragments
 	private SchoolListFragment mSchoolListFragment;
@@ -215,6 +217,9 @@ public class MainActivity extends Activity implements
 			data.put(ID, mUser.getId());
 			data.put(TOKEN, mUser.getToken());
 
+			if (mUser.getUserType().equals(User.STUDENT))
+				data.put(LOCATION, ((Student)mUser).getLocation());
+
 			File file = new File(getFilesDir().getPath() + SAVED_DATA_FILE_NAME);
 			FileWriter fileWriter = new FileWriter(file);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -239,10 +244,17 @@ public class MainActivity extends Activity implements
 
 			JSONObject dataJson = new JSONObject(data);
 			String user_type = dataJson.getString(USER_TYPE);
+			String username = dataJson.getString(USERNAME);
 			String id = dataJson.getString(ID);
 			String token = dataJson.getString(TOKEN);
 
-			mUser = user_type.equals(User.TA) ? new TA(id, token) : new Student(id, token);
+			if (user_type.equals(User.TA)) {
+				mUser = new TA(username, id, token);
+			}
+			else {
+				String location = dataJson.getString(LOCATION);
+				mUser = new Student(username, id, token, location);
+			}
 		}
 		catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -260,6 +272,9 @@ public class MainActivity extends Activity implements
 		mUser = student;
 	}
 
+	/**
+	 * Listener for the ActionBar tabs.
+	 */
 	private class LoginTabListener implements ActionBar.TabListener {
 
 		Fragment mFragment;

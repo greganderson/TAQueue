@@ -7,13 +7,20 @@ package com.familybiz.greg.taqueue.model;
  */
 public class Student extends User {
 
-	public Student(String id, String token) {
-		super(id, token);
+	private String mLocation;
+
+	public Student(String username, String id, String token, String location) {
+		super(username, id, token);
+		mLocation = location;
 	}
 
 	@Override
 	public String getUserType() {
 		return STUDENT;
+	}
+
+	public String getLocation() {
+		return mLocation;
 	}
 
 	/**

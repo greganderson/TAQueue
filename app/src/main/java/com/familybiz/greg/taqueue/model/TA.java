@@ -7,8 +7,8 @@ package com.familybiz.greg.taqueue.model;
  */
 public class TA extends User {
 
-	public TA(String id, String token) {
-		super(id, token);
+	public TA(String username, String id, String token) {
+		super(username, id, token);
 	}
 
 	@Override

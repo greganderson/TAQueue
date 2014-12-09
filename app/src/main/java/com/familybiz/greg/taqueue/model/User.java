@@ -10,13 +10,19 @@ public abstract class User {
 	public static final String TA = "ta";
 	public static final String STUDENT = "student";
 
+	private String mUsername;
+
 	// Username and password used for authentication
 	private String mId;     // username
 	private String mToken;  // password
 
-	public User(String id, String token) {
+	public User(String username, String id, String token) {
 		mId = id;
 		mToken = token;
+	}
+
+	public String getUsername() {
+		return mUsername;
 	}
 
 	public String getId() {
