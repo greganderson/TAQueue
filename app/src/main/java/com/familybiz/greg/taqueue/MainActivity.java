@@ -17,12 +17,12 @@ import com.familybiz.greg.taqueue.model.StudentQueue;
 import com.familybiz.greg.taqueue.model.TA;
 import com.familybiz.greg.taqueue.model.User;
 import com.familybiz.greg.taqueue.network.NetworkRequest;
-import com.familybiz.greg.taqueue.network.StudentRequest;
 import com.familybiz.greg.taqueue.view.InstructorListFragment;
 import com.familybiz.greg.taqueue.view.QueueListFragment;
 import com.familybiz.greg.taqueue.view.SchoolListFragment;
 import com.familybiz.greg.taqueue.view.StudentLoginFragment;
 import com.familybiz.greg.taqueue.view.TALoginFragment;
+import com.familybiz.greg.taqueue.view.QueueFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +43,7 @@ public class MainActivity extends Activity implements
 		SchoolListFragment.OnSchoolSelectedListener,
 		InstructorListFragment.OnInstructorSelectedListener,
 		QueueListFragment.OnQueueSelectedListener,
-		StudentRequest.OnStudentCreatedListener {
+		StudentLoginFragment.OnStudentLoginSuccessListener {
 
 	// Global access to the networking class, TODO: Which might be a bad idea
 	public static NetworkRequest NETWORK_REQUEST;
@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements
 	private QueueListFragment mQueueListFragment;
 	private StudentLoginFragment mStudentLoginFragment;
 	private TALoginFragment mTALoginFragment;
+	private QueueFragment mQueueFragment;
 
 	// ActionBar
 	private ActionBar mActionBar;
@@ -95,7 +96,7 @@ public class MainActivity extends Activity implements
 		mInstructorListFragment = new InstructorListFragment();
 		mInstructorListFragment.setOnInstructorSelectedListener(this);
 
-		// Queues
+		// Queue list
 
 		mQueueListFragment = new QueueListFragment();
 		mQueueListFragment.setOnQueueSelectedListener(this);
@@ -103,6 +104,7 @@ public class MainActivity extends Activity implements
 		// Login screen
 
 		mStudentLoginFragment = new StudentLoginFragment();
+		mStudentLoginFragment.setOnStudentLoginSuccessListener(this);
 		mTALoginFragment = new TALoginFragment();
 
 		// ActionBar
@@ -118,6 +120,10 @@ public class MainActivity extends Activity implements
 
 		mActionBar.addTab(mStudentTab);
 		mActionBar.addTab(mTATab);
+
+		// Actual queue
+
+		mQueueFragment = new QueueFragment();
 
 		FragmentTransaction addTransaction = getFragmentManager().beginTransaction();
 		addTransaction.add(R.id.fragment_layout, mSchoolListFragment);
@@ -191,10 +197,14 @@ public class MainActivity extends Activity implements
 
 	@Override
 	public void onBackPressed() {
+		clearActionBarAndLoadingCircle();
+		super.onBackPressed();
+	}
+
+	private void clearActionBarAndLoadingCircle() {
 		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		ProgressBar loadingCircle = (ProgressBar)findViewById(R.id.loading_circle);
 		loadingCircle.setVisibility(View.GONE);
-		super.onBackPressed();
 	}
 
 	public static School getSelectedSchool() {
@@ -207,6 +217,16 @@ public class MainActivity extends Activity implements
 
 	public static StudentQueue getSelectedQueue() {
 		return mSelectedQueue;
+	}
+
+	@Override
+	public void onStudentLoginSuccess() {
+		clearActionBarAndLoadingCircle();
+
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.fragment_layout, mQueueFragment);
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 
 	private void saveToFile() {
@@ -265,11 +285,6 @@ public class MainActivity extends Activity implements
 		catch (JSONException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public void onStudentCreated(Student student) {
-		mUser = student;
 	}
 
 	/**
