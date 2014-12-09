@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.familybiz.greg.taqueue.MainActivity;
 import com.familybiz.greg.taqueue.model.Instructor;
 
 /**
@@ -18,7 +19,7 @@ public class InstructorListFragment extends ListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// Populate the list of instructors.
 		mArrayAdapter.clear();
-		Instructor[] instructors = mSelectedSchool.getInstructors();
+		Instructor[] instructors = MainActivity.getSelectedSchool().getInstructors();
 		String[] names = new String[instructors.length];
 		for (int i = 0; i < names.length; i++)
 			names[i] = instructors[i].getName();
@@ -33,12 +34,9 @@ public class InstructorListFragment extends ListFragment {
 	 */
 	@Override
 	Object getSelectedItem(String name) {
-		for (Instructor instructor : mSelectedSchool.getInstructors()) {
-			if (instructor.getName().equals(name)) {
-				mSelectedInstructor = instructor;
+		for (Instructor instructor : MainActivity.getSelectedSchool().getInstructors())
+			if (instructor.getName().equals(name))
 				return instructor;
-			}
-		}
 		return null;
 	}
 

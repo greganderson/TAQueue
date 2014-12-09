@@ -54,6 +54,11 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 	private ActionBar.Tab mStudentTab;
 	private ActionBar.Tab mTATab;
 
+	// Currently selected options
+	private static School mSelectedSchool;          // Current selected school
+	private static Instructor mSelectedInstructor;  // Current selected instructor
+	private static StudentQueue mSelectedQueue;     // Current selected queue
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -129,6 +134,8 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 	 */
 	@Override
 	public void onSchoolSelected(School school) {
+		mSelectedSchool = school;
+
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_layout, mInstructorListFragment);
 		transaction.addToBackStack(null);
@@ -141,6 +148,8 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 	 */
 	@Override
 	public void onInstructorSelected(Instructor instructor) {
+		mSelectedInstructor = instructor;
+
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_layout, mQueueListFragment);
 		transaction.addToBackStack(null);
@@ -149,6 +158,8 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 
 	@Override
 	public void onQueueSelected(StudentQueue queue) {
+		mSelectedQueue = queue;
+
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_layout, mStudentLoginFragment);
 		transaction.addToBackStack(null);
@@ -166,6 +177,18 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 		ProgressBar loadingCircle = (ProgressBar)findViewById(R.id.loading_circle);
 		loadingCircle.setVisibility(View.GONE);
 		super.onBackPressed();
+	}
+
+	public static School getSelectedSchool() {
+		return mSelectedSchool;
+	}
+
+	public static Instructor getSelectedInstructor() {
+		return mSelectedInstructor;
+	}
+
+	public static StudentQueue getSelectedQueue() {
+		return mSelectedQueue;
 	}
 
 	private void saveToFile() {

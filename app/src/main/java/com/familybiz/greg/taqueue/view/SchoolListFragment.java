@@ -49,12 +49,9 @@ public class SchoolListFragment extends ListFragment {
 	 */
 	@Override
 	Object getSelectedItem(String name) {
-		for (School school : mSchools) {
-			if (school.getName().equals(name)) {
-				mSelectedSchool = school;
+		for (School school : mSchools)
+			if (school.getName().equals(name))
 				return school;
-			}
-		}
 		return null;
 	}
 

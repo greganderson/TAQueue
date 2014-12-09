@@ -11,9 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.familybiz.greg.taqueue.R;
-import com.familybiz.greg.taqueue.model.Instructor;
 import com.familybiz.greg.taqueue.model.School;
-import com.familybiz.greg.taqueue.model.StudentQueue;
 
 /**
  * A fragment with a listview inside.
@@ -25,10 +23,7 @@ public abstract class ListFragment extends Fragment {
 	// The array that contains the data displayed in the listview
 	protected static ArrayAdapter<String> mArrayAdapter;
 
-	protected static School[] mSchools;                 // List of all schools
-	protected static School mSelectedSchool;            // Current selected school
-	protected static Instructor mSelectedInstructor;    // Current selected instructor
-	protected static StudentQueue mSelectedQueue;       // Current selected queue
+	protected static School[] mSchools; // List of all schools
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

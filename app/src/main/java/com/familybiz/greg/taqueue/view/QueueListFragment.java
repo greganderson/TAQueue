@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.familybiz.greg.taqueue.MainActivity;
 import com.familybiz.greg.taqueue.model.StudentQueue;
 
 /**
@@ -16,7 +17,7 @@ public class QueueListFragment extends ListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// Populate the list of instructors.
 		mArrayAdapter.clear();
-		StudentQueue[] queues = mSelectedInstructor.getQueues();
+		StudentQueue[] queues = MainActivity.getSelectedInstructor().getQueues();
 		String[] classNumbers = new String[queues.length];
 		for (int i = 0; i < classNumbers.length; i++)
 			classNumbers[i] = queues[i].getClassNumber() + " - " + queues[i].getTitle();
@@ -36,12 +37,9 @@ public class QueueListFragment extends ListFragment {
 		// Extract the class number
 		String classNumber = name.substring(0, name.indexOf('-') - 1);
 
-		for (StudentQueue queue : mSelectedInstructor.getQueues()) {
-			if (queue.getClassNumber().equals(classNumber)) {
-				mSelectedQueue = queue;
+		for (StudentQueue queue : MainActivity.getSelectedInstructor().getQueues())
+			if (queue.getClassNumber().equals(classNumber))
 				return queue;
-			}
-		}
 		return null;
 	}
 
