@@ -11,6 +11,11 @@ public class Student extends User {
 		super(id, token);
 	}
 
+	@Override
+	public String getUserType() {
+		return STUDENT;
+	}
+
 	/**
 	 * Attempts to enter the queue.  Returns true on success, false on failure.
 	 */

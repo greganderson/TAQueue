@@ -7,6 +7,9 @@ package com.familybiz.greg.taqueue.model;
  */
 public abstract class User {
 
+	public static final String TA = "ta";
+	public static final String STUDENT = "student";
+
 	// Username and password used for authentication
 	private String mId;     // username
 	private String mToken;  // password
@@ -23,4 +26,6 @@ public abstract class User {
 	public String getToken() {
 		return mToken;
 	}
+
+	public abstract String getUserType();
 }

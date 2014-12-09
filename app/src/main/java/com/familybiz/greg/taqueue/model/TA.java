@@ -10,4 +10,9 @@ public class TA extends User {
 	public TA(String id, String token) {
 		super(id, token);
 	}
+
+	@Override
+	public String getUserType() {
+		return TA;
+	}
 }
