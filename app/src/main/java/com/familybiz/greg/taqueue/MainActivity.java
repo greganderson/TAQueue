@@ -12,8 +12,12 @@ import android.widget.ProgressBar;
 
 import com.familybiz.greg.taqueue.model.Instructor;
 import com.familybiz.greg.taqueue.model.School;
+import com.familybiz.greg.taqueue.model.Student;
 import com.familybiz.greg.taqueue.model.StudentQueue;
+import com.familybiz.greg.taqueue.model.TA;
+import com.familybiz.greg.taqueue.model.User;
 import com.familybiz.greg.taqueue.network.NetworkRequest;
+import com.familybiz.greg.taqueue.network.StudentRequest;
 import com.familybiz.greg.taqueue.view.InstructorListFragment;
 import com.familybiz.greg.taqueue.view.QueueListFragment;
 import com.familybiz.greg.taqueue.view.SchoolListFragment;
@@ -35,12 +39,21 @@ import java.io.IOException;
 /**
  * Created by Greg Anderson
  */
-public class MainActivity extends Activity implements SchoolListFragment.OnSchoolSelectedListener, InstructorListFragment.OnInstructorSelectedListener, QueueListFragment.OnQueueSelectedListener {
+public class MainActivity extends Activity implements
+		SchoolListFragment.OnSchoolSelectedListener,
+		InstructorListFragment.OnInstructorSelectedListener,
+		QueueListFragment.OnQueueSelectedListener,
+		StudentRequest.OnStudentCreatedListener {
 
 	// Global access to the networking class, TODO: Which might be a bad idea
 	public static NetworkRequest NETWORK_REQUEST;
 
 	private String SAVED_DATA_FILE_NAME = "data.txt";
+
+	// Used in saving and reading from file
+	private String USER_TYPE = "user_type";
+	private String ID = "id";
+	private String TOKEN = "token";
 
 	// Fragments
 	private SchoolListFragment mSchoolListFragment;
@@ -58,6 +71,9 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 	private static School mSelectedSchool;          // Current selected school
 	private static Instructor mSelectedInstructor;  // Current selected instructor
 	private static StudentQueue mSelectedQueue;     // Current selected queue
+
+	// Current user data
+	private User mUser;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -194,6 +210,11 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 	private void saveToFile() {
 		try {
 			JSONObject data = new JSONObject();
+
+			data.put(USER_TYPE, mUser.getUserType());
+			data.put(ID, mUser.getId());
+			data.put(TOKEN, mUser.getToken());
+
 			File file = new File(getFilesDir().getPath() + SAVED_DATA_FILE_NAME);
 			FileWriter fileWriter = new FileWriter(file);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -201,6 +222,9 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 			bufferedWriter.close();
 		}
 		catch (IOException e) {
+			e.printStackTrace();
+		}
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
@@ -212,7 +236,13 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String data = bufferedReader.readLine();
 			bufferedReader.close();
+
 			JSONObject dataJson = new JSONObject(data);
+			String user_type = dataJson.getString(USER_TYPE);
+			String id = dataJson.getString(ID);
+			String token = dataJson.getString(TOKEN);
+
+			mUser = user_type.equals(User.TA) ? new TA(id, token) : new Student(id, token);
 		}
 		catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -223,6 +253,11 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 		catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onStudentCreated(Student student) {
+		mUser = student;
 	}
 
 	private class LoginTabListener implements ActionBar.TabListener {
