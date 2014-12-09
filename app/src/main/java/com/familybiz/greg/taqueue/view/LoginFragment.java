@@ -71,10 +71,13 @@ public abstract class LoginFragment extends Fragment {
 
 				ProgressBar loadingCircle = (ProgressBar)getActivity().findViewById(R.id.loading_circle);
 				loadingCircle.setVisibility(View.VISIBLE);
-				// TODO: Make network call
+
+				makeNetworkCallToCreateUser();
 			}
 		});
 
 		return rootLayout;
 	}
+
+	abstract void makeNetworkCallToCreateUser();
 }

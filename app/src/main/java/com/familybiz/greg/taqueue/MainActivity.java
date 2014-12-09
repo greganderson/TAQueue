@@ -20,6 +20,17 @@ import com.familybiz.greg.taqueue.view.SchoolListFragment;
 import com.familybiz.greg.taqueue.view.StudentLoginFragment;
 import com.familybiz.greg.taqueue.view.TALoginFragment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 /**
  * Created by Greg Anderson
@@ -28,6 +39,8 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 
 	// Global access to the networking class, TODO: Which might be a bad idea
 	public static NetworkRequest NETWORK_REQUEST;
+
+	private String SAVED_DATA_FILE_NAME = "data.txt";
 
 	// Fragments
 	private SchoolListFragment mSchoolListFragment;
@@ -153,6 +166,40 @@ public class MainActivity extends Activity implements SchoolListFragment.OnSchoo
 		ProgressBar loadingCircle = (ProgressBar)findViewById(R.id.loading_circle);
 		loadingCircle.setVisibility(View.GONE);
 		super.onBackPressed();
+	}
+
+	private void saveToFile() {
+		try {
+			JSONObject data = new JSONObject();
+			File file = new File(getFilesDir().getPath() + SAVED_DATA_FILE_NAME);
+			FileWriter fileWriter = new FileWriter(file);
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			bufferedWriter.write(data.toString());
+			bufferedWriter.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void readFromFile() {
+		try {
+			File file = new File(getFilesDir().getPath() + SAVED_DATA_FILE_NAME);
+			FileReader fileReader = new FileReader(file);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			String data = bufferedReader.readLine();
+			bufferedReader.close();
+			JSONObject dataJson = new JSONObject(data);
+		}
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private class LoginTabListener implements ActionBar.TabListener {

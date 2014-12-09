@@ -21,4 +21,9 @@ public class StudentLoginFragment extends LoginFragment {
 		mPasswordTextBox.setHint(getString(R.string.location_hint));
 		return rootLayout;
 	}
+
+	@Override
+	void makeNetworkCallToCreateUser() {
+		// TODO: Implement
+	}
 }

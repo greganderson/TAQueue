@@ -73,7 +73,9 @@ public class SchoolListFragment extends ListFragment {
 	public interface OnSchoolSelectedListener {
 		public void onSchoolSelected(School school);
 	}
+
 	private OnSchoolSelectedListener mOnSchoolSelectedListener;
+
 	public void setOnSchoolSelectedListener(OnSchoolSelectedListener onSchoolSelectedListener) {
 		mOnSchoolSelectedListener = onSchoolSelectedListener;
 	}

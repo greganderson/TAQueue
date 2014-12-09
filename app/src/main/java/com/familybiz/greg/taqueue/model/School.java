@@ -3,10 +3,10 @@ package com.familybiz.greg.taqueue.model;
 import java.util.ArrayList;
 
 /**
- * Created by Greg Anderson
- *
  * Represents a school with all of its information.  A school has a name, an abbreviation, and a
  * list of instructors.
+ *
+ * Created by Greg Anderson
  */
 public class School {
 

@@ -1,11 +1,11 @@
 package com.familybiz.greg.taqueue.model;
 
 /**
- * Created by Greg Anderson
- *
  * Represents a queue for an instructor.  Would have called it a Queue, but java swiped that name
  * before I could get to it.  A queue keeps track of whether it is active or frozen.  It also has
  * a class number, title, and an ID.
+ *
+ * Created by Greg Anderson
  */
 public class StudentQueue {
 

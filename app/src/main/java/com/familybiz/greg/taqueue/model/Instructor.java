@@ -3,10 +3,10 @@ package com.familybiz.greg.taqueue.model;
 import java.util.ArrayList;
 
 /**
- * Created by Greg Anderson
- *
  * Represents an instructor from a school.  An instructor has a name, a username, and a list of
  * queues associated with them.
+ *
+ * Created by Greg Anderson
  */
 public class Instructor {
 

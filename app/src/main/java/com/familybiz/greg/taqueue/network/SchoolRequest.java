@@ -12,8 +12,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by Greg Anderson
+ * Used to make the network call to the server, parse the response, and populate the necessary data
+ * entries.
  *
+ * Created by Greg Anderson
  */
 public class SchoolRequest implements NetworkRequest.OnJsonArrayReceivedListener {
 
@@ -28,7 +30,7 @@ public class SchoolRequest implements NetworkRequest.OnJsonArrayReceivedListener
 	}
 
 	/**
-	 * Parses the json response into a School array then triggers the listener if there is one.
+	 * Parses the json response into an array of Schools then triggers the listener if there is one.
 	 */
 	@Override
 	public void onJsonArrayReceived(String response) {

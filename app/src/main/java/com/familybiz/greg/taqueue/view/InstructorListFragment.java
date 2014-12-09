@@ -57,7 +57,9 @@ public class InstructorListFragment extends ListFragment {
 	public interface OnInstructorSelectedListener {
 		public void onInstructorSelected(Instructor instructor);
 	}
+
 	private OnInstructorSelectedListener mOnInstructorSelectedListener;
+
 	public void setOnInstructorSelectedListener(OnInstructorSelectedListener onInstructorSelectedListener) {
 		mOnInstructorSelectedListener = onInstructorSelectedListener;
 	}

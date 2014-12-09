@@ -21,4 +21,9 @@ public class TALoginFragment extends LoginFragment {
 		mPasswordTextBox.setHint(getString(R.string.password_hint));
 		return rootLayout;
 	}
+
+	@Override
+	void makeNetworkCallToCreateUser() {
+		// TODO: Implement
+	}
 }
