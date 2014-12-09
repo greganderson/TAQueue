@@ -1,6 +1,7 @@
 package com.familybiz.greg.taqueue.network;
 
 import android.content.Context;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -34,8 +35,24 @@ public class NetworkRequest {
 		mQueue = Volley.newRequestQueue(context);
 	}
 
+	/**
+	 * Creates a new url using the BASE_URL and the given url: BASE_URL + url.
+	 */
 	public void executeGetRequest(String url) {
+		executeGetRequest(url, false, "", "");
+	}
+
+	/**
+	 * Creates a new url using the BASE_URL and the given url: BASE_URL + url.  Adds the username (id)
+	 * and password (token) as basic authorization to the header.
+	 */
+	public void executeGetRequest(String url, final boolean addAuthorization, String id, String token) {
 		// TODO: Make the change to using Uri.Builder
+
+		// Make it so the authorization variables can be accessed from the inner class
+		final boolean authorize = addAuthorization;
+		final String username = id;
+		final String password = token;
 
 		StringRequest stringRequest = new StringRequest(
 				Request.Method.GET,
@@ -49,7 +66,7 @@ public class NetworkRequest {
 				new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						Log.e("Json Parsing", "Error in parsing the json response.");
+						Log.e("Network request error", "Something was wrong with the request.");
 					}
 				}){
 
@@ -58,6 +75,12 @@ public class NetworkRequest {
 			public Map<String, String> getHeaders() throws AuthFailureError {
 				Map<String, String> headers = new HashMap<String, String>();
 				headers.put("Accept", "application/json");
+
+				// Encode the username and password if provided
+				if (authorize) {
+					String code = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
+					headers.put("Authorization", code);
+				}
 				return headers;
 			}
 		};
@@ -66,7 +89,16 @@ public class NetworkRequest {
 	}
 
 	public void executePostRequest(String url, JSONObject params) {
+		executePostRequest(url, params, false, "", "");
+	}
+
+	public void executePostRequest(String url, JSONObject params, boolean addAuthorization, String id, String token) {
 		// TODO: Make the change to using Uri.Builder
+
+		// Make it so the authorization variables can be accessed from the inner class
+		final boolean authorize = addAuthorization;
+		final String username = id;
+		final String password = token;
 
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
 				BASE_URL + url,
@@ -90,6 +122,12 @@ public class NetworkRequest {
 				Map<String, String> headers = new HashMap<String, String>();
 				headers.put("Content-Type", "application/json");
 				headers.put("Accept", "application/json");
+
+				// Encode the username and password if provided
+				if (authorize) {
+					String code = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
+					headers.put("Authorization", code);
+				}
 				return headers;
 			}
 		};
