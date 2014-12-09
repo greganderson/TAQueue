@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import com.familybiz.greg.taqueue.R;
 
 /**
+ * Represents the student login screen.
+ *
  * Created by Greg Anderson
  */
 public class StudentLoginFragment extends LoginFragment {

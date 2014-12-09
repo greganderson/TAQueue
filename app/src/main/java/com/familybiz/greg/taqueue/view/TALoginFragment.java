@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import com.familybiz.greg.taqueue.R;
 
 /**
+ * Represents the TA login screen.
+ *
  * Created by Greg Anderson
  */
 public class TALoginFragment extends LoginFragment {

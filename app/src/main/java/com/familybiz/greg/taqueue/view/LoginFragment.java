@@ -10,11 +10,17 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 /**
+ * Abstract fragment containing the information and layout of a login screen.
+ *
  * Created by Greg Anderson
  */
-public class LoginFragment extends Fragment {
+public abstract class LoginFragment extends Fragment {
 
+	// Represents the name box for both students and TA's
 	protected EditText mNameTextBox;
+
+	// Represents both the location box (for students) and the password box (for TA's)
+	// There is probably a better name for it, but I couldn't come up with it.
 	protected EditText mPasswordTextBox;
 
 	@Override
@@ -25,7 +31,7 @@ public class LoginFragment extends Fragment {
 		mNameTextBox = new EditText(getActivity());
 		mPasswordTextBox = new EditText(getActivity());
 
-		// Set the maximum number of characters
+		// Set the maximum number of characters allowed
 		int maxLength = 25;
 		mNameTextBox.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
 		mPasswordTextBox.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
