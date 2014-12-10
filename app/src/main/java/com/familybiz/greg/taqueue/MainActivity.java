@@ -17,12 +17,12 @@ import com.familybiz.greg.taqueue.model.StudentQueue;
 import com.familybiz.greg.taqueue.model.TA;
 import com.familybiz.greg.taqueue.model.User;
 import com.familybiz.greg.taqueue.network.NetworkRequest;
-import com.familybiz.greg.taqueue.view.InstructorListFragment;
-import com.familybiz.greg.taqueue.view.QueueListFragment;
-import com.familybiz.greg.taqueue.view.SchoolListFragment;
-import com.familybiz.greg.taqueue.view.StudentLoginFragment;
-import com.familybiz.greg.taqueue.view.TALoginFragment;
-import com.familybiz.greg.taqueue.view.QueueFragment;
+import com.familybiz.greg.taqueue.view.lists.InstructorListFragment;
+import com.familybiz.greg.taqueue.view.lists.QueueListFragment;
+import com.familybiz.greg.taqueue.view.lists.SchoolListFragment;
+import com.familybiz.greg.taqueue.view.login.StudentLoginFragment;
+import com.familybiz.greg.taqueue.view.login.TALoginFragment;
+import com.familybiz.greg.taqueue.view.queue.QueueFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +76,7 @@ public class MainActivity extends Activity implements
 	private static StudentQueue mSelectedQueue;     // Current selected queue
 
 	// Current user data
-	private User mUser;
+	private static User mUser;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -220,13 +220,19 @@ public class MainActivity extends Activity implements
 	}
 
 	@Override
-	public void onStudentLoginSuccess() {
+	public void onStudentLoginSuccess(Student student) {
+		mUser = student;
+
 		clearActionBarAndLoadingCircle();
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_layout, mQueueFragment);
 		transaction.addToBackStack(null);
 		transaction.commit();
+	}
+
+	public static User getUser() {
+		return mUser;
 	}
 
 	private void saveToFile() {
