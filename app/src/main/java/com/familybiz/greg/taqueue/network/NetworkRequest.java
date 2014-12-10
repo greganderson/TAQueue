@@ -66,7 +66,7 @@ public class NetworkRequest {
 				new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						Log.e("Network request error", "Something was wrong with the request.");
+						Log.e("Get request error", "Something was wrong with the request.");
 					}
 				}){
 
@@ -79,6 +79,8 @@ public class NetworkRequest {
 				// Encode the username and password if provided
 				if (authorize) {
 					String code = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
+					code = code.replaceAll("\n", "");
+					code = "Basic " + code;
 					headers.put("Authorization", code);
 				}
 				return headers;
@@ -112,7 +114,7 @@ public class NetworkRequest {
 				new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						Log.e("Json Parsing", "Error in parsing the json response.");
+						Log.e("Post request error", "Something went wrong.");
 					}
 				}){
 
@@ -133,6 +135,42 @@ public class NetworkRequest {
 		};
 
 		mQueue.add(jsonObjectRequest);
+	}
+
+	public void executeDeleteRequest(String url, String id, String token) {
+		final String username = id;
+		final String password = token;
+
+		StringRequest stringRequest = new StringRequest(
+				Request.Method.DELETE,
+				BASE_URL + url,
+				new Response.Listener<String>() {
+					@Override
+					public void onResponse(String response) {
+						parseResponse(response);
+					}
+				},
+				new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						Log.e("Delete request error", "Something was wrong with the request.");
+					}
+				}){
+
+			// Set the correct header to prevent getting html back
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				Map<String, String> headers = new HashMap<String, String>();
+				headers.put("Accept", "application/json");
+
+				// Encode the username and password
+				String code = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
+				headers.put("Authorization", code);
+				return headers;
+			}
+		};
+
+		mQueue.add(stringRequest);
 	}
 
 
