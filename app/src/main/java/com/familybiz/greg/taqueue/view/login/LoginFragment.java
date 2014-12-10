@@ -1,4 +1,4 @@
-package com.familybiz.greg.taqueue.view;
+package com.familybiz.greg.taqueue.view.login;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.familybiz.greg.taqueue.R;
 
@@ -69,15 +70,21 @@ public abstract class LoginFragment extends Fragment {
 				InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 				inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
+				String name = mNameTextBox.getText().toString();
+				String password = mPasswordTextBox.getText().toString();
+				if (name.isEmpty() || password.isEmpty()) {
+					Toast.makeText(getActivity(), "Please fill in both fields", Toast.LENGTH_SHORT).show();
+					return;
+				}
 				ProgressBar loadingCircle = (ProgressBar)getActivity().findViewById(R.id.loading_circle);
 				loadingCircle.setVisibility(View.VISIBLE);
 
-				makeNetworkCallToCreateUser();
+				makeNetworkCallToCreateUser(name, password);
 			}
 		});
 
 		return rootLayout;
 	}
 
-	abstract void makeNetworkCallToCreateUser();
+	abstract void makeNetworkCallToCreateUser(String name, String password);
 }

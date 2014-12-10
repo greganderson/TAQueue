@@ -1,4 +1,4 @@
-package com.familybiz.greg.taqueue.view;
+package com.familybiz.greg.taqueue.view.login;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,7 +23,7 @@ public class TALoginFragment extends LoginFragment {
 	}
 
 	@Override
-	void makeNetworkCallToCreateUser() {
+	void makeNetworkCallToCreateUser(String name, String password) {
 		// TODO: Implement
 	}
 }

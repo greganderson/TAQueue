@@ -1,4 +1,4 @@
-package com.familybiz.greg.taqueue.view;
+package com.familybiz.greg.taqueue.view.queue;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -10,7 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.familybiz.greg.taqueue.MainActivity;
 import com.familybiz.greg.taqueue.R;
+import com.familybiz.greg.taqueue.model.User;
+import com.familybiz.greg.taqueue.model.queue.QueueData;
+import com.familybiz.greg.taqueue.network.QueueRequest;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,10 +26,13 @@ import java.util.Map;
  *
  * Created by Greg Anderson
  */
-public class QueueFragment extends Fragment {
+public class QueueFragment extends Fragment implements QueueRequest.OnQueueInformationReceivedListener {
 
 	public final static String ITEM_TITLE = "title";
 	public final static String ITEM_CAPTION = "caption";
+
+	private QueueData mQueue;
+	private QueueRequest mQueueRequest;
 
 	public Map<String,?> createItem(String title, String caption) {
 		Map<String,String> item = new HashMap<String,String>();
@@ -36,6 +43,13 @@ public class QueueFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		mQueueRequest = new QueueRequest();
+		mQueueRequest.setOnQueueInformationReceivedListener(this);
+
+		// Load the queue data
+		User user = MainActivity.getUser();
+		mQueueRequest.updateQueue(user.getId(), user.getToken());
+
 		// create our list and custom adapter
 		QueueListAdapter adapter = new QueueListAdapter(getActivity());
 
@@ -61,5 +75,9 @@ public class QueueFragment extends Fragment {
 
 		return list;
 	}
-}
 
+	@Override
+	public void onQueueInformationReceived(QueueData queue) {
+		// TODO: Implement
+	}
+}

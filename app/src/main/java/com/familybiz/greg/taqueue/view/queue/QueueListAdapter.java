@@ -1,4 +1,4 @@
-package com.familybiz.greg.taqueue.view;
+package com.familybiz.greg.taqueue.view.queue;
 
 import android.content.Context;
 import android.view.View;

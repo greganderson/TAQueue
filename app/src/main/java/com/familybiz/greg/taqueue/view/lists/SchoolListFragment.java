@@ -1,4 +1,4 @@
-package com.familybiz.greg.taqueue.view;
+package com.familybiz.greg.taqueue.view.lists;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

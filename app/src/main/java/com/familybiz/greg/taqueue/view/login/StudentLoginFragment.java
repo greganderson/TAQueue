@@ -1,4 +1,4 @@
-package com.familybiz.greg.taqueue.view;
+package com.familybiz.greg.taqueue.view.login;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,14 +31,14 @@ public class StudentLoginFragment extends LoginFragment implements StudentReques
 	}
 
 	@Override
-	void makeNetworkCallToCreateUser() {
-		// TODO: Implement
+	void makeNetworkCallToCreateUser(String name, String location) {
+		mStudentRequest.createStudent(name, location);
 	}
 
 	@Override
 	public void onStudentCreated(Student student) {
 		if (mOnStudentLoginSuccessListener != null)
-			mOnStudentLoginSuccessListener.onStudentLoginSuccess();
+			mOnStudentLoginSuccessListener.onStudentLoginSuccess(student);
 	}
 
 
@@ -46,7 +46,7 @@ public class StudentLoginFragment extends LoginFragment implements StudentReques
 
 
 	public interface OnStudentLoginSuccessListener {
-		public void onStudentLoginSuccess();
+		public void onStudentLoginSuccess(Student student);
 	}
 
 	private OnStudentLoginSuccessListener mOnStudentLoginSuccessListener;

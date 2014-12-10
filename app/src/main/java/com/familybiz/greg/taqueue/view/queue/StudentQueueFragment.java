@@ -1,4 +1,4 @@
-package com.familybiz.greg.taqueue.view;
+package com.familybiz.greg.taqueue.view.queue;
 
 import android.app.Fragment;
 import android.os.Bundle;
