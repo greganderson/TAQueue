@@ -231,8 +231,8 @@ public class MainActivity extends Activity implements
 		ActionBar.Tab enterQueue = mActionBar.newTab().setText(getString(R.string.enter_queue_button_text));
 		ActionBar.Tab signOut = mActionBar.newTab().setText(getString(R.string.sign_out_button_text));
 
-		enterQueue.setTabListener(new QueueActionTabListener());
-		signOut.setTabListener(new QueueActionTabListener());
+		enterQueue.setTabListener(new QueueStudentActionTabListener());
+		signOut.setTabListener(new QueueStudentActionTabListener());
 
 		mActionBar.addTab(enterQueue);
 		mActionBar.addTab(signOut);
@@ -332,7 +332,7 @@ public class MainActivity extends Activity implements
 		public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) { }
 	}
 
-	private class QueueActionTabListener implements ActionBar.TabListener {
+	private class QueueStudentActionTabListener implements ActionBar.TabListener {
 
 		@Override
 		public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
@@ -356,9 +356,49 @@ public class MainActivity extends Activity implements
 		}
 
 		@Override
-		public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+		public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) { }
 
+		@Override
+		public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+			if (tab.getText().equals(getString(R.string.enter_queue_button_text))) {
+				mQueueFragment.enterQueue();
+				tab.setText(getString(R.string.exit_queue_button_text));
+			}
+			else if (tab.getText().equals(getString(R.string.exit_queue_button_text))) {
+				mQueueFragment.exitQueue();
+				tab.setText(getString(R.string.enter_queue_button_text));
+			}
+			else {
+				mQueueFragment.signOut();
+			}
 		}
+	}
+
+	private class QueueTAActionTabListener implements ActionBar.TabListener {
+
+		@Override
+		public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+			// Stop bug where the first tab would get selected on loading
+			if (mInitialSelect) {
+				mInitialSelect = false;
+				return;
+			}
+
+			if (tab.getText().equals(getString(R.string.enter_queue_button_text))) {
+				mQueueFragment.enterQueue();
+				tab.setText(getString(R.string.exit_queue_button_text));
+			}
+			else if (tab.getText().equals(getString(R.string.exit_queue_button_text))) {
+				mQueueFragment.exitQueue();
+				tab.setText(getString(R.string.enter_queue_button_text));
+			}
+			else {
+				mQueueFragment.signOut();
+			}
+		}
+
+		@Override
+		public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) { }
 
 		@Override
 		public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
