@@ -23,7 +23,7 @@ public class StudentRequest implements NetworkRequest.OnJsonObjectReceivedListen
 			JSONObject params = new JSONObject();
 			JSONObject nameLocation = new JSONObject();
 
-			nameLocation.put("name", name);
+			nameLocation.put("username", name);
 			nameLocation.put("location", location);
 
 			params.put("student", nameLocation);
