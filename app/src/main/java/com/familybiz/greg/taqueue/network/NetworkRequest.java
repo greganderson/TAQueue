@@ -168,6 +168,54 @@ public class NetworkRequest {
 		mQueue.add(stringRequest);
 	}
 
+	public void executePutRequest(String url, final Map<String, String> jsonParams, String id, String token) {
+		// TODO: Make the change to using Uri.Builder
+
+		// Make it so the authorization variables can be accessed from the inner class
+		final boolean authorize = !id.isEmpty();
+		final String username = id;
+		final String password = token;
+		final Map<String, String> params = jsonParams;
+
+		StringRequest stringRequest = new StringRequest(
+				Request.Method.PUT,
+				BASE_URL + url,
+				new Response.Listener<String>() {
+					@Override
+					public void onResponse(String response) {
+						parseResponse(response.toString());
+					}
+				},
+				new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						Log.e("Post request error", "Something went wrong.");
+					}
+				}){
+
+			// Set the correct header to prevent getting html back
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				Map<String, String> headers = new HashMap<String, String>();
+				headers.put("Content-Type", "application/json");
+				headers.put("Accept", "application/json");
+
+				// Encode the username and password if provided
+				if (authorize)
+					encodeHeader(headers, username, password);
+
+				return headers;
+			}
+
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError {
+				return params;
+			}
+		};
+
+		mQueue.add(stringRequest);
+	}
+
 	private void encodeHeader(Map<String, String> headers, String username, String password) {
 		String code = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
 		code = code.replaceAll("\n", "");
