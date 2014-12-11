@@ -46,7 +46,7 @@ public class NetworkRequest {
 	 * Creates a new url using the BASE_URL and the given url: BASE_URL + url.  Adds the username (id)
 	 * and password (token) as basic authorization to the header.
 	 */
-	public void executeGetRequest(String url, String id, String token) {
+	public void executeGetRequest(String url, final String id, String token) {
 		// TODO: Make the change to using Uri.Builder
 
 		// Make it so the authorization variables can be accessed from the inner class
@@ -77,12 +77,9 @@ public class NetworkRequest {
 				headers.put("Accept", "application/json");
 
 				// Encode the username and password if provided
-				if (authorize) {
-					String code = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
-					code = code.replaceAll("\n", "");
-					code = "Basic " + code;
-					headers.put("Authorization", code);
-				}
+				if (authorize)
+					encodeHeader(headers, username, password);
+
 				return headers;
 			}
 		};
@@ -126,10 +123,9 @@ public class NetworkRequest {
 				headers.put("Accept", "application/json");
 
 				// Encode the username and password if provided
-				if (authorize) {
-					String code = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
-					headers.put("Authorization", code);
-				}
+				if (authorize)
+					encodeHeader(headers, username, password);
+
 				return headers;
 			}
 		};
@@ -164,13 +160,19 @@ public class NetworkRequest {
 				headers.put("Accept", "application/json");
 
 				// Encode the username and password
-				String code = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
-				headers.put("Authorization", code);
+				encodeHeader(headers, username, password);
 				return headers;
 			}
 		};
 
 		mQueue.add(stringRequest);
+	}
+
+	private void encodeHeader(Map<String, String> headers, String username, String password) {
+		String code = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
+		code = code.replaceAll("\n", "");
+		code = "Basic " + code;
+		headers.put("Authorization", code);
 	}
 
 
