@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="label_color">#BBBBBB</color>
+    <color name="ta_highlight_color">#FFD873</color>
+    <color name="background_color">#EEEEEE</color>
+</resources>

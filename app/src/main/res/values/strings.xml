@@ -9,5 +9,10 @@
     <string name="location_hint">Location</string>
     <string name="password_hint">Password</string>
     <string name="login_button">Login</string>
+    <string name="ta_list_label">TA\'s</string>
+    <string name="queue_label">Queue</string>
+    <string name="school_list_label">Schools</string>
+    <string name="instructor_list_label">Instructors</string>
+    <string name="queue_list_label">Classes</string>
 
 </resources>
