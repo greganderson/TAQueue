@@ -21,5 +21,9 @@
     <string name="freeze_tab_label">Freeze</string>
     <string name="activate_tab_label">Activate</string>
     <string name="unfreeze_tab_label">Unfreeze</string>
+    <string name="ta_selecting_student_popup_label">Action</string>
+    <string name="accept_student_action">Accept</string>
+    <string name="remove_student_action">Remove</string>
+    <string name="put_student_back_action">Put Back</string>
 
 </resources>
