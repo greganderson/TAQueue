@@ -14,5 +14,8 @@
     <string name="school_list_label">Schools</string>
     <string name="instructor_list_label">Instructors</string>
     <string name="queue_list_label">Classes</string>
+    <string name="enter_queue_button_text">Enter Queue</string>
+    <string name="sign_out_button_text">Sign Out</string>
+    <string name="exit_queue_button_text">Exit Queue</string>
 
 </resources>
