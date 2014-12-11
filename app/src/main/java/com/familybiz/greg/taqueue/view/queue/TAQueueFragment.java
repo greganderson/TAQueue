@@ -6,9 +6,6 @@ import com.familybiz.greg.taqueue.model.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by Greg Anderson
  */
@@ -26,15 +23,15 @@ public class TAQueueFragment extends QueueFragment {
 	 * Helper method for activating and deactivating the queue.
 	 */
 	private void setActiveQueue(boolean active) {
-		Map<String, String> params = new HashMap<String, String>();
+		JSONObject params = new JSONObject();
 		JSONObject options = new JSONObject();
 		try {
 			options.put("active", active);
+			params.put("queue", options);
 		}
 		catch (JSONException e) {
 			e.printStackTrace();
 		}
-		params.put("queue", options.toString());
 
 		User user = MainActivity.getUser();
 		MainActivity.NETWORK_REQUEST.executePutRequest("/queue", params, user.getId(), user.getToken());
@@ -52,15 +49,15 @@ public class TAQueueFragment extends QueueFragment {
 	 * Helper method for freezing and unfreezing the queue.
 	 */
 	private void setFrozenQueue(boolean frozen) {
-		Map<String, String> params = new HashMap<String, String>();
+		JSONObject params = new JSONObject();
 		JSONObject options = new JSONObject();
 		try {
 			options.put("frozen", frozen);
+			params.put("queue", options);
 		}
 		catch (JSONException e) {
 			e.printStackTrace();
 		}
-		params.put("queue", options.toString());
 
 		User user = MainActivity.getUser();
 		MainActivity.NETWORK_REQUEST.executePutRequest("/queue", params, user.getId(), user.getToken());
