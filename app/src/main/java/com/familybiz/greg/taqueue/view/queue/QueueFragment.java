@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -31,18 +32,33 @@ import java.util.Set;
  *
  * Created by Greg Anderson
  */
-public abstract class QueueFragment extends Fragment implements QueueRequest.OnQueueInformationReceivedListener {
+public abstract class QueueFragment extends Fragment implements QueueRequest.OnQueueInformationReceivedListener, ListView.OnItemClickListener {
 
-	public static Map<String, Set<String>> STUDENTS_BEING_HELPED;
+	private static Map<String, Set<String>> STUDENTS_BEING_HELPED;
+
+	protected CharSequence[] mNotYetHelpedActionOptions;
+
+	protected CharSequence[] mAlreadyHelpedActionOptions;
+
+	public static boolean beingHelped(String name, String location) {
+		if (QueueFragment.STUDENTS_BEING_HELPED.containsKey(name))
+			if (QueueFragment.STUDENTS_BEING_HELPED.get(name).contains(location))
+				return true;
+
+		// Student not being helped
+		return false;
+	}
 
 	private LinearLayout.LayoutParams mLayoutParams;
 	private FrameLayout mTASection;
 	private ListView mList;
-	private ArrayAdapter<String> mAdapter;
+	protected ArrayAdapter<String> mAdapter;
 
 	private LayoutInflater mInflater;
 
 	private QueueRequest mQueueRequest;
+
+	private QueueData mQueue;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +66,14 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		mInflater = inflater;
 
 		STUDENTS_BEING_HELPED = new HashMap<String, Set<String>>();
+
+		mNotYetHelpedActionOptions = new CharSequence[] {
+				getString(R.string.accept_student_action),
+				getString(R.string.remove_student_action)};
+
+		mAlreadyHelpedActionOptions = new CharSequence[] {
+				getString(R.string.remove_student_action),
+				getString(R.string.put_student_back_action)};
 
 		LinearLayout rootLayout = new LinearLayout(getActivity());
 		rootLayout.setOrientation(LinearLayout.VERTICAL);
@@ -101,11 +125,14 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 				1
 		));
 
+		mList.setOnItemClickListener(this);
+
 		return rootLayout;
 	}
 
 	@Override
 	public void onQueueInformationReceived(QueueData queue) {
+		mQueue = queue;
 		populateQueue(queue);
 	}
 
@@ -150,12 +177,26 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		QueueStudent[] studentArray = queue.getStudents();
 		for (int i = 0; i < studentArray.length; i++) {
 			String studentNameLocation = studentArray[i].getUsername() + " @ " + studentArray[i].getLocation();
-			//if (studentArray[i].isInQueue())
-			students.add(studentNameLocation);
+			if (studentArray[i].isInQueue())
+				students.add(studentNameLocation);
 		}
 
 		mAdapter.addAll(students);
 	}
 
+	protected QueueStudent getStudent(String name, String location) {
+		QueueStudent[] students = mQueue.getStudents();
+		for (int i = 0; i < students.length; i++) {
+			boolean sameName = students[i].getUsername().equals(name);
+			boolean sameLocation = students[i].getLocation().equals(location);
+			if (sameName && sameLocation)
+				return students[i];
+		}
+		return null;
+	}
+
 	public abstract void signOut();
+
+	@Override
+	abstract public void onItemClick(AdapterView<?> adapterView, View view, int i, long l);
 }
