@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.familybiz.greg.taqueue.R;
 import com.familybiz.greg.taqueue.model.School;
@@ -23,12 +24,22 @@ public abstract class ListFragment extends Fragment {
 	// The array that contains the data displayed in the listview
 	protected static ArrayAdapter<String> mArrayAdapter;
 
+	protected TextView mLabelView;
+
 	protected static School[] mSchools; // List of all schools
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		LinearLayout rootLayout = new LinearLayout(getActivity());
 		rootLayout.setOrientation(LinearLayout.VERTICAL);
+
+		// Label
+
+		View labelLayout = inflater.inflate(R.layout.label_layout, null);
+		mLabelView = (TextView)labelLayout.findViewById(R.id.label_layout);
+		rootLayout.addView(mLabelView, new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				getResources().getDimensionPixelSize(R.dimen.label_height)));
 
 		// Check if list already exists, that way we don't overwrite the current one
 		if (mArrayAdapter == null)

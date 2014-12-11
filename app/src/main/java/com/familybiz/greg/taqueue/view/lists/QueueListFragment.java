@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.familybiz.greg.taqueue.MainActivity;
+import com.familybiz.greg.taqueue.R;
 import com.familybiz.greg.taqueue.model.StudentQueue;
 
 /**
@@ -24,7 +25,11 @@ public class QueueListFragment extends ListFragment {
 
 		mArrayAdapter.addAll(classNumbers);
 
-		return super.onCreateView(inflater, container, savedInstanceState);
+		View rootLayout = super.onCreateView(inflater, container, savedInstanceState);
+
+		mLabelView.setText(getString(R.string.queue_list_label));
+		
+		return rootLayout;
 	}
 
 

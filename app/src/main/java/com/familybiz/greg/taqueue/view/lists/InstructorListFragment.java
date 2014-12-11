@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.familybiz.greg.taqueue.MainActivity;
+import com.familybiz.greg.taqueue.R;
 import com.familybiz.greg.taqueue.model.Instructor;
 
 /**
@@ -26,7 +27,11 @@ public class InstructorListFragment extends ListFragment {
 
 		mArrayAdapter.addAll(names);
 
-		return super.onCreateView(inflater, container, savedInstanceState);
+		View rootLayout = super.onCreateView(inflater, container, savedInstanceState);
+
+		mLabelView.setText(getString(R.string.instructor_list_label));
+
+		return rootLayout;
 	}
 
 	/**

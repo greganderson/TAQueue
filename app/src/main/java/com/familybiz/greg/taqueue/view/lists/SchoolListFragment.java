@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.familybiz.greg.taqueue.R;
 import com.familybiz.greg.taqueue.model.School;
 import com.familybiz.greg.taqueue.network.SchoolRequest;
 
@@ -40,7 +41,11 @@ public class SchoolListFragment extends ListFragment {
 		// Populate the list and array of schools
 		mSchoolRequest.populateSchoolData();
 
-		return super.onCreateView(inflater, container, savedInstanceState);
+		View rootLayout = super.onCreateView(inflater, container, savedInstanceState);
+
+		mLabelView.setText(getString(R.string.school_list_label));
+
+		return rootLayout;
 	}
 
 
