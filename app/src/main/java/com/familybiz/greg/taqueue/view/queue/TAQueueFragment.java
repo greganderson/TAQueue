@@ -12,11 +12,11 @@ import org.json.JSONObject;
 public class TAQueueFragment extends QueueFragment {
 
 	public void activateQueue()  {
-		setActiveQueue(false);
+		setActiveQueue(true);
 	}
 
 	public void deactivateQueue() {
-		setActiveQueue(true);
+		setActiveQueue(false);
 	}
 
 	/**
