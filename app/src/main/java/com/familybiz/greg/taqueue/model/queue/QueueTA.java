@@ -20,23 +20,11 @@ public class QueueTA {
 		return mId;
 	}
 
-	public void setId(String id) {
-		mId = id;
-	}
-
 	public QueueStudent getStudent() {
 		return mStudent;
 	}
 
-	public void setStudent(QueueStudent student) {
-		mStudent = student;
-	}
-
 	public String getUsername() {
 		return mUsername;
-	}
-
-	public void setUsername(String username) {
-		mUsername = username;
 	}
 }
