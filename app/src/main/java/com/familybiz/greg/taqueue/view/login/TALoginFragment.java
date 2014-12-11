@@ -1,6 +1,7 @@
 package com.familybiz.greg.taqueue.view.login;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ public class TALoginFragment extends LoginFragment implements TARequest.OnTACrea
 		View rootLayout = super.onCreateView(inflater, container, savedInstanceState);
 		mNameTextBox.setHint(getString(R.string.name_hint));
 		mPasswordTextBox.setHint(getString(R.string.password_hint));
+		mPasswordTextBox.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 		return rootLayout;
 	}
 
