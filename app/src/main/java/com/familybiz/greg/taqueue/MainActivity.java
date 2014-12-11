@@ -22,7 +22,8 @@ import com.familybiz.greg.taqueue.view.lists.QueueListFragment;
 import com.familybiz.greg.taqueue.view.lists.SchoolListFragment;
 import com.familybiz.greg.taqueue.view.login.StudentLoginFragment;
 import com.familybiz.greg.taqueue.view.login.TALoginFragment;
-import com.familybiz.greg.taqueue.view.queue.QueueFragment;
+import com.familybiz.greg.taqueue.view.queue.StudentQueueFragment;
+import com.familybiz.greg.taqueue.view.queue.TAQueueFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +44,8 @@ public class MainActivity extends Activity implements
 		SchoolListFragment.OnSchoolSelectedListener,
 		InstructorListFragment.OnInstructorSelectedListener,
 		QueueListFragment.OnQueueSelectedListener,
-		StudentLoginFragment.OnStudentLoginSuccessListener {
+		StudentLoginFragment.OnStudentLoginSuccessListener,
+		TALoginFragment.OnTALoginSuccessListener {
 
 	// Global access to the networking class, TODO: Which might be a bad idea
 	public static NetworkRequest NETWORK_REQUEST;
@@ -63,7 +65,8 @@ public class MainActivity extends Activity implements
 	private QueueListFragment mQueueListFragment;
 	private StudentLoginFragment mStudentLoginFragment;
 	private TALoginFragment mTALoginFragment;
-	private QueueFragment mQueueFragment;
+	private StudentQueueFragment mStudentQueueFragment;
+	private TAQueueFragment mTAQueueFragment;
 
 	// ActionBar
 	private ActionBar mActionBar;
@@ -105,6 +108,7 @@ public class MainActivity extends Activity implements
 		mStudentLoginFragment = new StudentLoginFragment();
 		mStudentLoginFragment.setOnStudentLoginSuccessListener(this);
 		mTALoginFragment = new TALoginFragment();
+		mTALoginFragment.setOnTALoginSuccessListener(this);
 
 		// ActionBar
 
@@ -122,7 +126,8 @@ public class MainActivity extends Activity implements
 
 		// Actual queue
 
-		mQueueFragment = new QueueFragment();
+		mStudentQueueFragment = new StudentQueueFragment();
+		mTAQueueFragment = new TAQueueFragment();
 
 		FragmentTransaction addTransaction = getFragmentManager().beginTransaction();
 		addTransaction.add(R.id.fragment_layout, mSchoolListFragment);
@@ -224,7 +229,7 @@ public class MainActivity extends Activity implements
 
 		clearActionBarAndLoadingCircle();
 
-		// Bring on the actionbar
+		// Turn on Student ActionBar
 		mInitialSelect = true;
 		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		mActionBar.removeAllTabs();
@@ -239,10 +244,39 @@ public class MainActivity extends Activity implements
 		invalidateOptionsMenu();
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_layout, mQueueFragment);
+		transaction.replace(R.id.fragment_layout, mStudentQueueFragment);
 		transaction.addToBackStack(null);
 		transaction.commit();
 
+	}
+
+	@Override
+	public void onTALoginSuccess(TA ta) {
+		mUser = ta;
+
+		clearActionBarAndLoadingCircle();
+
+		// Turn on TA ActionBar
+		mInitialSelect = true;
+		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		mActionBar.removeAllTabs();
+		ActionBar.Tab deactivateQueue = mActionBar.newTab().setText(getString(R.string.deactivate_tab_label));
+		ActionBar.Tab freezeQueue = mActionBar.newTab().setText(getString(R.string.freeze_tab_label));
+		ActionBar.Tab signOut = mActionBar.newTab().setText(getString(R.string.sign_out_button_text));
+
+		deactivateQueue.setTabListener(new QueueTAActionTabListener());
+		freezeQueue.setTabListener(new QueueTAActionTabListener());
+		signOut.setTabListener(new QueueTAActionTabListener());
+
+		mActionBar.addTab(deactivateQueue);
+		mActionBar.addTab(freezeQueue);
+		mActionBar.addTab(signOut);
+		invalidateOptionsMenu();
+
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.fragment_layout, mTAQueueFragment);
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 
 	public static User getUser() {
@@ -342,17 +376,7 @@ public class MainActivity extends Activity implements
 				return;
 			}
 
-			if (tab.getText().equals(getString(R.string.enter_queue_button_text))) {
-				mQueueFragment.enterQueue();
-				tab.setText(getString(R.string.exit_queue_button_text));
-			}
-			else if (tab.getText().equals(getString(R.string.exit_queue_button_text))) {
-				mQueueFragment.exitQueue();
-				tab.setText(getString(R.string.enter_queue_button_text));
-			}
-			else {
-				mQueueFragment.signOut();
-			}
+			tabSelected(tab);
 		}
 
 		@Override
@@ -360,16 +384,25 @@ public class MainActivity extends Activity implements
 
 		@Override
 		public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+			tabSelected(tab);
+		}
+
+		private void tabSelected(ActionBar.Tab tab) {
+			// Enter/exit
+
 			if (tab.getText().equals(getString(R.string.enter_queue_button_text))) {
-				mQueueFragment.enterQueue();
+				mStudentQueueFragment.enterQueue();
 				tab.setText(getString(R.string.exit_queue_button_text));
 			}
 			else if (tab.getText().equals(getString(R.string.exit_queue_button_text))) {
-				mQueueFragment.exitQueue();
+				mStudentQueueFragment.exitQueue();
 				tab.setText(getString(R.string.enter_queue_button_text));
 			}
+
+			// Sign out
+
 			else {
-				mQueueFragment.signOut();
+				mStudentQueueFragment.signOut();
 			}
 		}
 	}
@@ -384,17 +417,7 @@ public class MainActivity extends Activity implements
 				return;
 			}
 
-			if (tab.getText().equals(getString(R.string.enter_queue_button_text))) {
-				mQueueFragment.enterQueue();
-				tab.setText(getString(R.string.exit_queue_button_text));
-			}
-			else if (tab.getText().equals(getString(R.string.exit_queue_button_text))) {
-				mQueueFragment.exitQueue();
-				tab.setText(getString(R.string.enter_queue_button_text));
-			}
-			else {
-				mQueueFragment.signOut();
-			}
+			tabSelected(tab);
 		}
 
 		@Override
@@ -402,16 +425,36 @@ public class MainActivity extends Activity implements
 
 		@Override
 		public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-			if (tab.getText().equals(getString(R.string.enter_queue_button_text))) {
-				mQueueFragment.enterQueue();
-				tab.setText(getString(R.string.exit_queue_button_text));
+			tabSelected(tab);
+		}
+
+		private void tabSelected(ActionBar.Tab tab) {
+			// Activate/deactivate
+
+			if (tab.getText().equals(getString(R.string.deactivate_tab_label))) {
+				mTAQueueFragment.deactivateQueue();
+				tab.setText(getString(R.string.activate_tab_label));
 			}
-			else if (tab.getText().equals(getString(R.string.exit_queue_button_text))) {
-				mQueueFragment.exitQueue();
-				tab.setText(getString(R.string.enter_queue_button_text));
+			else if (tab.getText().equals(getString(R.string.activate_tab_label))) {
+				mTAQueueFragment.activateQueue();
+				tab.setText(getString(R.string.deactivate_tab_label));
 			}
+
+			// Freeze/unfreeze
+
+			else if (tab.getText().equals(getString(R.string.freeze_tab_label))) {
+				mTAQueueFragment.freezeQueue();
+				tab.setText(getString(R.string.unfreeze_tab_label));
+			}
+			else if (tab.getText().equals(getString(R.string.unfreeze_tab_label))) {
+				mTAQueueFragment.unfreezeQueue();
+				tab.setText(getString(R.string.freeze_tab_label));
+			}
+
+			// Sign out
+
 			else {
-				mQueueFragment.signOut();
+				mTAQueueFragment.signOut();
 			}
 		}
 	}
