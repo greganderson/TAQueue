@@ -168,28 +168,29 @@ public class NetworkRequest {
 		mQueue.add(stringRequest);
 	}
 
-	public void executePutRequest(String url, final Map<String, String> jsonParams, String id, String token) {
+	public void executePutRequest(String url, JSONObject jsonParams, String id, String token) {
 		// TODO: Make the change to using Uri.Builder
 
 		// Make it so the authorization variables can be accessed from the inner class
 		final boolean authorize = !id.isEmpty();
 		final String username = id;
 		final String password = token;
-		final Map<String, String> params = jsonParams;
+		final JSONObject params = jsonParams;
 
-		StringRequest stringRequest = new StringRequest(
+		ExtendedJsonObjectRequest jsonObjectRequest = new ExtendedJsonObjectRequest(
 				Request.Method.PUT,
 				BASE_URL + url,
-				new Response.Listener<String>() {
+				params,
+				new Response.Listener<JSONObject>() {
 					@Override
-					public void onResponse(String response) {
+					public void onResponse(JSONObject response) {
 						parseResponse(response.toString());
 					}
 				},
 				new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						Log.e("Post request error", "Something went wrong.");
+						Log.e("Put request error", "Something went wrong.");
 					}
 				}){
 
@@ -206,14 +207,9 @@ public class NetworkRequest {
 
 				return headers;
 			}
-
-			@Override
-			protected Map<String, String> getParams() throws AuthFailureError {
-				return params;
-			}
 		};
 
-		mQueue.add(stringRequest);
+		mQueue.add(jsonObjectRequest);
 	}
 
 	private void encodeHeader(Map<String, String> headers, String username, String password) {
@@ -247,6 +243,13 @@ public class NetworkRequest {
 				Log.e("Json Parsing", "Error in parsing the json response.");
 				e1.printStackTrace();
 			}
+		}
+	}
+
+	private class ExtendedJsonObjectRequest extends JsonObjectRequest {
+
+		public ExtendedJsonObjectRequest(int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+			super(Method.PUT, url, jsonRequest, listener, errorListener);
 		}
 	}
 
