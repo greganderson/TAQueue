@@ -2,6 +2,7 @@ package com.familybiz.greg.taqueue.view.queue;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,10 @@ import com.familybiz.greg.taqueue.network.QueueRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents the queue.  ListView from http://jsharkey.org/blog/2008/08/18/separating-lists-with-headers-in-android-09/.
@@ -34,6 +37,8 @@ public class QueueFragment extends Fragment implements QueueRequest.OnQueueInfor
 	public final static String ITEM_TITLE = "title";
 	public final static String ITEM_CAPTION = "caption";
 
+	public static Map<String, Set<String>> STUDENTS_BEING_HELPED;
+
 	private LinearLayout.LayoutParams mLayoutParams;
 	private FrameLayout mTASection;
 	private ListView mList;
@@ -44,18 +49,12 @@ public class QueueFragment extends Fragment implements QueueRequest.OnQueueInfor
 	private QueueData mQueue;
 	private QueueRequest mQueueRequest;
 
-	public Map<String,?> createItem(String title, String caption) {
-		Map<String,String> item = new HashMap<String,String>();
-		item.put(ITEM_TITLE, title);
-		item.put(ITEM_CAPTION, caption);
-		return item;
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// Used to get an xml view file and use it multiple times
-		//inflater = (LayoutInflater)getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
 		mInflater = inflater;
+
+		STUDENTS_BEING_HELPED = new HashMap<String, Set<String>>();
 
 		LinearLayout rootLayout = new LinearLayout(getActivity());
 		rootLayout.setOrientation(LinearLayout.VERTICAL);
@@ -92,8 +91,9 @@ public class QueueFragment extends Fragment implements QueueRequest.OnQueueInfor
 		TextView queueLabelView = (TextView)queueLabelViewXml.findViewById(R.id.label_layout);
 		queueLabelView.setText(getString(R.string.queue_label));
 		rootLayout.addView(queueLabelView, new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				getResources().getDimensionPixelSize(R.dimen.label_height)));
+				0,
+				getResources().getDimensionPixelSize(R.dimen.label_height),
+				1));
 
 		// Queue list
 
@@ -119,8 +119,8 @@ public class QueueFragment extends Fragment implements QueueRequest.OnQueueInfor
 
 		// Populate the list of TA's
 
-
 		mTASection.removeAllViews();
+		STUDENTS_BEING_HELPED.clear();
 
 		QueueTA[] taArray = queue.getTAs();
 		for (int i = 0; i < taArray.length; i++) {
@@ -133,8 +133,16 @@ public class QueueFragment extends Fragment implements QueueRequest.OnQueueInfor
 			QueueTA ta = taArray[i];
 			if (ta.getStudent() == null)
 				taView.setText(ta.getUsername());
-			else
+			else {
 				taView.setText(ta.getUsername() + " helping " + ta.getStudent().getUsername());
+
+				// Store the student name and location
+				String username = ta.getStudent().getUsername();
+				String location = ta.getStudent().getLocation();
+				if (!STUDENTS_BEING_HELPED.containsKey(username))
+					STUDENTS_BEING_HELPED.put(username, new HashSet<String>());
+				STUDENTS_BEING_HELPED.get(username).add(location);
+			}
 
 			mTASection.addView(taView, mLayoutParams);
 		}
@@ -146,52 +154,25 @@ public class QueueFragment extends Fragment implements QueueRequest.OnQueueInfor
 
 		List<String> students = new ArrayList<String>();
 		QueueStudent[] studentArray = queue.getStudents();
-		for (int i = 0; i < studentArray.length; i++)
+		for (int i = 0; i < studentArray.length; i++) {
+			String studentNameLocation = studentArray[i].getUsername() + " @ " + studentArray[i].getLocation();
 			//if (studentArray[i].isInQueue())
-			students.add(studentArray[i].getUsername() + " @ " + studentArray[i].getLocation());
+			students.add(studentNameLocation);
+		}
 
 		mAdapter.addAll(students);
 	}
 
-	/*
-	private void populateQueue(QueueData queue) {
-
-		// Get list of TA's
-		List<Map<String,?>> tas = new LinkedList<Map<String,?>>();
-		QueueTA[] taArray = queue.getTAs();
-		for (int i = 0; i < taArray.length; i++) {
-			QueueTA ta = taArray[i];
-			if (ta.getStudent() == null)
-				tas.add(createItem(ta.getUsername(), ""));
-			else
-				tas.add(createItem(ta.getUsername(), ta.getStudent().getUsername()));
-		}
-
-		mAdapter.addSection("TA's", new SimpleAdapter(getActivity(), tas, R.layout.list_complex,
-				new String[]{ITEM_TITLE, ITEM_CAPTION}, new int[]{R.id.list_complex_title, R.id.list_complex_caption}));
-
-		// Get students that are in the queue
-
-		List<String> students = new ArrayList<String>();
-		QueueStudent[] studentArray = queue.getStudents();
-		for (int i = 0; i < studentArray.length; i++)
-			//if (studentArray[i].isInQueue())
-				students.add(studentArray[i].getUsername() + " @ " + studentArray[i].getLocation());
-
-		mAdapter.addSection("Queue", new ArrayAdapter<String>(getActivity(),
-				R.layout.list_item_example, students.toArray(new String[students.size()])));
-
-		mList = new ListView(getActivity());
-		mList.setAdapter(mAdapter);
-		mAdapter.notifyDataSetChanged();
-		mList.invalidateViews();
-
-		mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-				// TODO: Implement
-			}
-		});
+	public void enterQueue() {
+		MainActivity.NETWORK_REQUEST.executeGetRequest("/queue/enter_queue", MainActivity.getUser().getId(), MainActivity.getUser().getToken());
 	}
-	*/
+
+	public void exitQueue() {
+		MainActivity.NETWORK_REQUEST.executeGetRequest("/queue/exit_queue", MainActivity.getUser().getId(), MainActivity.getUser().getToken());
+	}
+
+	public void signOut() {
+		// TODO: Implement
+		Log.i("Queue", "Sign out");
+	}
 }
