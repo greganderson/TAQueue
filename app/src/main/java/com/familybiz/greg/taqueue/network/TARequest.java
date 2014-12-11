@@ -21,12 +21,12 @@ public class TARequest implements NetworkRequest.OnJsonObjectReceivedListener {
 	public void createTA(String name, String password) {
 		try {
 			JSONObject params = new JSONObject();
-			JSONObject nameLocation = new JSONObject();
+			JSONObject namePassword = new JSONObject();
 
-			nameLocation.put("username", name);
-			nameLocation.put("password", password);
+			namePassword.put("username", name);
+			namePassword.put("password", password);
 
-			params.put("student", nameLocation);
+			params.put("ta", namePassword);
 
 			String url = "/schools/" +
 					MainActivity.getSelectedSchool().getAbbreviation() + "/" +
@@ -69,7 +69,7 @@ public class TARequest implements NetworkRequest.OnJsonObjectReceivedListener {
 
 	private OnTACreatedListener mOnTACreatedListener;
 
-	public OnTACreatedListener getOnTACreatedListener() {
-		return mOnTACreatedListener;
+	public void setOnTACreatedListener(OnTACreatedListener onTACreatedListener) {
+		mOnTACreatedListener = onTACreatedListener;
 	}
 }
