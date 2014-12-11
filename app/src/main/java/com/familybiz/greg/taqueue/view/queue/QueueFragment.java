@@ -2,7 +2,6 @@ package com.familybiz.greg.taqueue.view.queue;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -172,7 +171,7 @@ public class QueueFragment extends Fragment implements QueueRequest.OnQueueInfor
 	}
 
 	public void signOut() {
-		// TODO: Implement
-		Log.i("Queue", "Sign out");
+		User user = MainActivity.getUser();
+		MainActivity.NETWORK_REQUEST.executeDeleteRequest("/students/" + user.getId(), user.getId(), user.getToken());
 	}
 }
