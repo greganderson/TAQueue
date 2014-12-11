@@ -31,10 +31,7 @@ import java.util.Set;
  *
  * Created by Greg Anderson
  */
-public class QueueFragment extends Fragment implements QueueRequest.OnQueueInformationReceivedListener {
-
-	public final static String ITEM_TITLE = "title";
-	public final static String ITEM_CAPTION = "caption";
+public abstract class QueueFragment extends Fragment implements QueueRequest.OnQueueInformationReceivedListener {
 
 	public static Map<String, Set<String>> STUDENTS_BEING_HELPED;
 
@@ -45,7 +42,6 @@ public class QueueFragment extends Fragment implements QueueRequest.OnQueueInfor
 
 	private LayoutInflater mInflater;
 
-	private QueueData mQueue;
 	private QueueRequest mQueueRequest;
 
 	@Override
@@ -161,16 +157,5 @@ public class QueueFragment extends Fragment implements QueueRequest.OnQueueInfor
 		mAdapter.addAll(students);
 	}
 
-	public void enterQueue() {
-		MainActivity.NETWORK_REQUEST.executeGetRequest("/queue/enter_queue", MainActivity.getUser().getId(), MainActivity.getUser().getToken());
-	}
-
-	public void exitQueue() {
-		MainActivity.NETWORK_REQUEST.executeGetRequest("/queue/exit_queue", MainActivity.getUser().getId(), MainActivity.getUser().getToken());
-	}
-
-	public void signOut() {
-		User user = MainActivity.getUser();
-		MainActivity.NETWORK_REQUEST.executeDeleteRequest("/students/" + user.getId(), user.getId(), user.getToken());
-	}
+	public abstract void signOut();
 }

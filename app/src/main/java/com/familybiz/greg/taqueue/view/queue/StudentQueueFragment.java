@@ -1,27 +1,23 @@
 package com.familybiz.greg.taqueue.view.queue;
 
-import android.app.Fragment;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import com.familybiz.greg.taqueue.MainActivity;
+import com.familybiz.greg.taqueue.model.User;
 
 /**
  * Created by Greg Anderson
  */
-public class StudentQueueFragment extends Fragment {
+public class StudentQueueFragment extends QueueFragment {
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		LinearLayout rootLayout = new LinearLayout(getActivity());
+	public void enterQueue() {
+		MainActivity.NETWORK_REQUEST.executeGetRequest("/queue/enter_queue", MainActivity.getUser().getId(), MainActivity.getUser().getToken());
+	}
 
-		ListView listView = new ListView(getActivity());
-		rootLayout.addView(listView, new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.MATCH_PARENT));
+	public void exitQueue() {
+		MainActivity.NETWORK_REQUEST.executeGetRequest("/queue/exit_queue", MainActivity.getUser().getId(), MainActivity.getUser().getToken());
+	}
 
-		return rootLayout;
+	public void signOut() {
+		User user = MainActivity.getUser();
+		MainActivity.NETWORK_REQUEST.executeDeleteRequest("/students/" + user.getId(), user.getId(), user.getToken());
 	}
 }
