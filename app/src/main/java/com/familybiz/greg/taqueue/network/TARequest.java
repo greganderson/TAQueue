@@ -1,7 +1,7 @@
 package com.familybiz.greg.taqueue.network;
 
 import com.familybiz.greg.taqueue.MainActivity;
-import com.familybiz.greg.taqueue.model.Student;
+import com.familybiz.greg.taqueue.model.TA;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,26 +12,26 @@ import org.json.JSONObject;
  *
  * Created by Greg Anderson
  */
-public class StudentRequest implements NetworkRequest.OnJsonObjectReceivedListener {
+public class TARequest implements NetworkRequest.OnJsonObjectReceivedListener {
 
-	public StudentRequest() {
+	public TARequest() {
 		MainActivity.NETWORK_REQUEST.addOnJsonObjectReceivedListener(this);
 	}
 
-	public void createStudent(String name, String location) {
+	public void createTA(String name, String password) {
 		try {
 			JSONObject params = new JSONObject();
 			JSONObject nameLocation = new JSONObject();
 
 			nameLocation.put("username", name);
-			nameLocation.put("location", location);
+			nameLocation.put("password", password);
 
 			params.put("student", nameLocation);
 
 			String url = "/schools/" +
 					MainActivity.getSelectedSchool().getAbbreviation() + "/" +
 					MainActivity.getSelectedInstructor().getUsername() + "/" +
-					MainActivity.getSelectedQueue().getClassNumber()   + "/students";
+					MainActivity.getSelectedQueue().getClassNumber()   + "/tas";
 
 			MainActivity.NETWORK_REQUEST.executePostRequest(url, params);
 		}
@@ -46,14 +46,13 @@ public class StudentRequest implements NetworkRequest.OnJsonObjectReceivedListen
 			JSONObject jsonObject = new JSONObject(response);
 
 			String username = jsonObject.getString("username");
-			String location = jsonObject.getString("location");
 			String id = jsonObject.getString("id");
 			String token = jsonObject.getString("token");
 
-			Student student = new Student(username, id, token, location);
+			TA ta = new TA(username, id, token);
 
-			if (mOnStudentCreatedListener != null)
-				mOnStudentCreatedListener.onStudentCreated(student);
+			if (mOnTACreatedListener != null)
+				mOnTACreatedListener.onTACreated(ta);
 		}
 		catch (JSONException e) {
 			e.printStackTrace();
@@ -64,13 +63,13 @@ public class StudentRequest implements NetworkRequest.OnJsonObjectReceivedListen
 	/***************************** LISTENERS *****************************/
 
 
-	public interface OnStudentCreatedListener {
-		public void onStudentCreated(Student student);
+	public interface OnTACreatedListener {
+		public void onTACreated(TA ta);
 	}
 
-	private OnStudentCreatedListener mOnStudentCreatedListener;
+	private OnTACreatedListener mOnTACreatedListener;
 
-	public void setOnStudentCreatedListener(OnStudentCreatedListener onStudentCreatedListener) {
-		mOnStudentCreatedListener = onStudentCreatedListener;
+	public OnTACreatedListener getOnTACreatedListener() {
+		return mOnTACreatedListener;
 	}
 }
