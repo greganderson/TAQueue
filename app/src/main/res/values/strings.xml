@@ -17,5 +17,9 @@
     <string name="enter_queue_button_text">Enter Queue</string>
     <string name="sign_out_button_text">Sign Out</string>
     <string name="exit_queue_button_text">Exit Queue</string>
+    <string name="deactivate_tab_label">Deactivate</string>
+    <string name="freeze_tab_label">Freeze</string>
+    <string name="activate_tab_label">Activate</string>
+    <string name="unfreeze_tab_label">Unfreeze</string>
 
 </resources>
