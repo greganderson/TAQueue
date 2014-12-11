@@ -17,6 +17,7 @@ public abstract class User {
 	private String mToken;  // password
 
 	public User(String username, String id, String token) {
+		mUsername = username;
 		mId = id;
 		mToken = token;
 	}

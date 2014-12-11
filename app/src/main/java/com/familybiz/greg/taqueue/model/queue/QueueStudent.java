@@ -26,47 +26,23 @@ public class QueueStudent {
 		return mId;
 	}
 
-	public void setId(String id) {
-		mId = id;
-	}
-
 	public boolean isInQueue() {
 		return mInQueue;
-	}
-
-	public void setInQueue(boolean inQueue) {
-		mInQueue = inQueue;
 	}
 
 	public String getLocation() {
 		return mLocation;
 	}
 
-	public void setLocation(String location) {
-		mLocation = location;
-	}
-
 	public String getQuestion() {
 		return mQuestion;
-	}
-
-	public void setQuestion(String question) {
-		mQuestion = question;
 	}
 
 	public String getTAId() {
 		return mTAId;
 	}
 
-	public void setTAId(String TAId) {
-		mTAId = TAId;
-	}
-
 	public String getUsername() {
 		return mUsername;
-	}
-
-	public void setUsername(String username) {
-		mUsername = username;
 	}
 }
