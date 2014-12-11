@@ -25,7 +25,7 @@ public class QueueRequest implements NetworkRequest.OnJsonObjectReceivedListener
 
 	public void updateQueue(String id, String token) {
 		String url = "/queue";
-		MainActivity.NETWORK_REQUEST.executeGetRequest(url, true, id, token);
+		MainActivity.NETWORK_REQUEST.executeGetRequest(url, id, token);
 	}
 
 	@Override
