@@ -39,18 +39,18 @@ public class NetworkRequest {
 	 * Creates a new url using the BASE_URL and the given url: BASE_URL + url.
 	 */
 	public void executeGetRequest(String url) {
-		executeGetRequest(url, false, "", "");
+		executeGetRequest(url, "", "");
 	}
 
 	/**
 	 * Creates a new url using the BASE_URL and the given url: BASE_URL + url.  Adds the username (id)
 	 * and password (token) as basic authorization to the header.
 	 */
-	public void executeGetRequest(String url, final boolean addAuthorization, String id, String token) {
+	public void executeGetRequest(String url, String id, String token) {
 		// TODO: Make the change to using Uri.Builder
 
 		// Make it so the authorization variables can be accessed from the inner class
-		final boolean authorize = addAuthorization;
+		final boolean authorize = !id.isEmpty();
 		final String username = id;
 		final String password = token;
 
@@ -91,14 +91,14 @@ public class NetworkRequest {
 	}
 
 	public void executePostRequest(String url, JSONObject params) {
-		executePostRequest(url, params, false, "", "");
+		executePostRequest(url, params, "", "");
 	}
 
-	public void executePostRequest(String url, JSONObject params, boolean addAuthorization, String id, String token) {
+	public void executePostRequest(String url, JSONObject params, String id, String token) {
 		// TODO: Make the change to using Uri.Builder
 
 		// Make it so the authorization variables can be accessed from the inner class
-		final boolean authorize = addAuthorization;
+		final boolean authorize = !id.isEmpty();
 		final String username = id;
 		final String password = token;
 
