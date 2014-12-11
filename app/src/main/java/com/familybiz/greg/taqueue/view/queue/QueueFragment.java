@@ -90,9 +90,8 @@ public class QueueFragment extends Fragment implements QueueRequest.OnQueueInfor
 		TextView queueLabelView = (TextView)queueLabelViewXml.findViewById(R.id.label_layout);
 		queueLabelView.setText(getString(R.string.queue_label));
 		rootLayout.addView(queueLabelView, new LinearLayout.LayoutParams(
-				0,
-				getResources().getDimensionPixelSize(R.dimen.label_height),
-				1));
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				getResources().getDimensionPixelSize(R.dimen.label_height)));
 
 		// Queue list
 

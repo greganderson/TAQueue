@@ -224,11 +224,6 @@ public class MainActivity extends Activity implements
 
 		clearActionBarAndLoadingCircle();
 
-		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_layout, mQueueFragment);
-		transaction.addToBackStack(null);
-		transaction.commit();
-
 		// Bring on the actionbar
 		mInitialSelect = true;
 		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -242,6 +237,12 @@ public class MainActivity extends Activity implements
 		mActionBar.addTab(enterQueue);
 		mActionBar.addTab(signOut);
 		invalidateOptionsMenu();
+
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.fragment_layout, mQueueFragment);
+		transaction.addToBackStack(null);
+		transaction.commit();
+
 	}
 
 	public static User getUser() {
