@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Represents the queue.  ListView from http://jsharkey.org/blog/2008/08/18/separating-lists-with-headers-in-android-09/.
@@ -49,21 +51,25 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		return false;
 	}
 
+	// View
 	private LinearLayout.LayoutParams mLayoutParams;
 	private FrameLayout mTASection;
 	private ListView mList;
 	protected ArrayAdapter<String> mAdapter;
-
 	private LayoutInflater mInflater;
 
+	// Network
 	private QueueRequest mQueueRequest;
+	private Timer mTimer;
 
+	// Data
 	private QueueData mQueue;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// Used to get an xml view file and use it multiple times
 		mInflater = inflater;
+		mTimer = new Timer();
 
 		STUDENTS_BEING_HELPED = new HashMap<String, Set<String>>();
 
@@ -134,6 +140,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 	public void onQueueInformationReceived(QueueData queue) {
 		mQueue = queue;
 		populateQueue(queue);
+		mTimer.schedule(new RefreshQueue(), 1000);
 	}
 
 	private void populateQueue(QueueData queue) {
@@ -193,6 +200,14 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 				return students[i];
 		}
 		return null;
+	}
+
+	private class RefreshQueue extends TimerTask {
+		@Override
+		public void run() {
+			User user = MainActivity.getUser();
+			mQueueRequest.updateQueue(user.getId(), user.getToken());
+		}
 	}
 
 	public abstract void signOut();
