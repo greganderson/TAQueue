@@ -70,7 +70,7 @@ public class TAQueueFragment extends QueueFragment {
 		User user = MainActivity.getUser();
 		MainActivity.NETWORK_REQUEST.executePutRequest("/queue", params, user.getId(), user.getToken());
 	}
-	
+
 	public void acceptStudent(String name, String location) {
 		actionOnStudent(name, location, "ta_accept");
 	}
@@ -96,6 +96,7 @@ public class TAQueueFragment extends QueueFragment {
 	public void signOut() {
 		User user = MainActivity.getUser();
 		MainActivity.NETWORK_REQUEST.executeDeleteRequest("/tas/" + user.getId(), user.getId(), user.getToken());
+		mTimer.cancel();
 	}
 
 	@Override

@@ -21,6 +21,8 @@ import com.familybiz.greg.taqueue.model.queue.QueueTA;
 import com.familybiz.greg.taqueue.network.QueueRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +54,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 	}
 
 	// View
+	private LinearLayout rootLayout;
 	private LinearLayout.LayoutParams mLayoutParams;
 	private FrameLayout mTASection;
 	private ListView mList;
@@ -60,7 +63,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 
 	// Network
 	private QueueRequest mQueueRequest;
-	private Timer mTimer;
+	protected Timer mTimer;
 
 	// Data
 	private QueueData mQueue;
@@ -81,7 +84,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 				getString(R.string.remove_student_action),
 				getString(R.string.put_student_back_action)};
 
-		LinearLayout rootLayout = new LinearLayout(getActivity());
+		rootLayout = new LinearLayout(getActivity());
 		rootLayout.setOrientation(LinearLayout.VERTICAL);
 
 		mLayoutParams = new LinearLayout.LayoutParams(
@@ -151,6 +154,13 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		STUDENTS_BEING_HELPED.clear();
 
 		QueueTA[] taArray = queue.getTAs();
+		Arrays.sort(taArray, new Comparator<QueueTA>() {
+			@Override
+			public int compare(QueueTA ta1, QueueTA ta2) {
+				return ta1.getUsername().compareTo(ta2.getUsername());
+			}
+		});
+
 		for (int i = 0; i < taArray.length; i++) {
 			View listItemXml = mInflater.inflate(R.layout.list_item, null);
 			TextView taView = (TextView)listItemXml.findViewById(R.id.basic_list_item);
@@ -175,6 +185,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 			mTASection.addView(taView, mLayoutParams);
 		}
 		mTASection.invalidate();
+		rootLayout.invalidate();
 
 		// Populate the list of students in the queue
 
