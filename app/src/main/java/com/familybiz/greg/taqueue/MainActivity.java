@@ -376,6 +376,9 @@ public class MainActivity extends Activity implements
 		public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) { }
 	}
 
+	/**
+	 * Listener for ActionBar tabs when logged in as a student.
+	 */
 	private class QueueStudentActionTabListener implements ActionBar.TabListener {
 
 		@Override
@@ -394,6 +397,11 @@ public class MainActivity extends Activity implements
 
 		@Override
 		public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+			// Stop bug where the first tab would get selected on loading
+			if (mInitialSelect) {
+				mInitialSelect = false;
+				return;
+			}
 			tabSelected(tab);
 		}
 
@@ -417,6 +425,9 @@ public class MainActivity extends Activity implements
 		}
 	}
 
+	/**
+	 * Listener for ActionBar tabs when logged in as a TA.
+	 */
 	private class QueueTAActionTabListener implements ActionBar.TabListener {
 
 		@Override
@@ -435,6 +446,12 @@ public class MainActivity extends Activity implements
 
 		@Override
 		public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+			// Stop bug where the first tab would get selected on loading
+			if (mInitialSelect) {
+				mInitialSelect = false;
+				return;
+			}
+
 			tabSelected(tab);
 		}
 
