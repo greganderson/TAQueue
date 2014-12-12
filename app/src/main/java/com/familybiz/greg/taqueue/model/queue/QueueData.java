@@ -1,6 +1,6 @@
 package com.familybiz.greg.taqueue.model.queue;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by Greg Anderson
@@ -12,16 +12,16 @@ public class QueueData {
 	private String mId;
 	private boolean mQuestionBased;
 	private String mStatus;
-	private Set<QueueStudent> mStudents;
-	private Set<QueueTA> mTAs;
+	private List<QueueStudent> mStudents;
+	private List<QueueTA> mTAs;
 
 	public QueueData(boolean active,
 	                 boolean frozen,
 	                 String id,
 	                 boolean questionBased,
 	                 String status,
-	                 Set<QueueStudent> students,
-	                 Set<QueueTA> TAs) {
+	                 List<QueueStudent> students,
+	                 List<QueueTA> TAs) {
 
 		mActive = active;
 		mFrozen = frozen;

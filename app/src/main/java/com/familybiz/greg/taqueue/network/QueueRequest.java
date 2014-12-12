@@ -11,8 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Greg Anderson
@@ -34,8 +34,8 @@ public class QueueRequest implements NetworkRequest.OnJsonObjectReceivedListener
 			return;
 
 		try {
-			Set<QueueStudent> studentSet = new HashSet<QueueStudent>();
-			Set<QueueTA> taSet = new HashSet<QueueTA>();
+			List<QueueStudent> studentSet = new ArrayList<QueueStudent>();
+			List<QueueTA> taSet = new ArrayList<QueueTA>();
 
 			JSONObject queueJson = new JSONObject(jsonObject);
 			boolean active = queueJson.getBoolean("active");
@@ -49,7 +49,7 @@ public class QueueRequest implements NetworkRequest.OnJsonObjectReceivedListener
 			if (studentsObject != JSONObject.NULL) {
 				JSONArray students = queueJson.getJSONArray("students");
 
-				studentSet = new HashSet<QueueStudent>();
+				studentSet = new ArrayList<QueueStudent>();
 				for (int i = 0; i < students.length(); i++) {
 					QueueStudent student = parseStudent(students.getJSONObject(i));
 					studentSet.add(student);
@@ -60,7 +60,7 @@ public class QueueRequest implements NetworkRequest.OnJsonObjectReceivedListener
 			if (tasObject != JSONObject.NULL) {
 				JSONArray tas = queueJson.getJSONArray("tas");
 
-				taSet = new HashSet<QueueTA>();
+				taSet = new ArrayList<QueueTA>();
 				for (int i = 0; i < tas.length(); i++) {
 					JSONObject ta = tas.getJSONObject(i);
 
