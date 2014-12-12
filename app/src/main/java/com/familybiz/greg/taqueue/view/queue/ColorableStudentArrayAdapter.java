@@ -6,13 +6,19 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.familybiz.greg.taqueue.MainActivity;
+import com.familybiz.greg.taqueue.R;
+
 /**
  * Created by Greg Anderson
  */
 public class ColorableStudentArrayAdapter extends ArrayAdapter<String> {
 
+	private int[] mColors;
+
 	public ColorableStudentArrayAdapter(Context context, int resource) {
 		super(context, resource);
+		mColors = getContext().getResources().getIntArray(R.array.ta_colors);
 	}
 
 	@Override
@@ -20,15 +26,17 @@ public class ColorableStudentArrayAdapter extends ArrayAdapter<String> {
 		TextView textView = (TextView)super.getView(position, convertView, parent);
 
 		// Check if student is being helped
-		/*
+
 		String nameLocation = super.getItem(position);
 		String[] items = MainActivity.getNameAndLocation(nameLocation);
 		String name = items[0];
 		String location = items[1];
-		if (QueueFragment.STUDENTS_BEING_HELPED.containsKey(name))
-			if (QueueFragment.STUDENTS_BEING_HELPED.get(name).contains(location))
-				textView.setBackgroundColor(getContext().getResources().getColor(R.color.ta_highlight_color));
-		*/
+
+		if (QueueFragment.beingHelped(name, location))
+			textView.setBackgroundColor(mColors[0]);
+
+		if (name.isEmpty() && location.isEmpty())
+			textView.setBackgroundColor(getContext().getResources().getColor(R.color.background_color));
 
 		return textView;
 	}

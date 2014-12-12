@@ -22,7 +22,7 @@ public class StudentQueueFragment extends QueueFragment {
 	public void signOut() {
 		User user = MainActivity.getUser();
 		MainActivity.NETWORK_REQUEST.executeDeleteRequest("/students/" + user.getId(), user.getId(), user.getToken());
-		mTimer.cancel();
+		mReadyToRefresh = false;
 	}
 
 	@Override

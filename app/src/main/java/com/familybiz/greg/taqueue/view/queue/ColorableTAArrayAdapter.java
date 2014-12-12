@@ -24,6 +24,10 @@ public class ColorableTAArrayAdapter extends ArrayAdapter<String> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TextView textView = (TextView)super.getView(position, convertView, parent);
 		textView.setBackgroundColor(mTAColors[position]);
+
+		if (textView.getText().toString().equals(getContext().getString(R.string.no_tas_on_duty)))
+			textView.setBackgroundColor(getContext().getResources().getColor(R.color.background_color));
+
 		return textView;
 	}
 }

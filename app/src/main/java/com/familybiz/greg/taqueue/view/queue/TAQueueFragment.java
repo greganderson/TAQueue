@@ -96,7 +96,7 @@ public class TAQueueFragment extends QueueFragment {
 	public void signOut() {
 		User user = MainActivity.getUser();
 		MainActivity.NETWORK_REQUEST.executeDeleteRequest("/tas/" + user.getId(), user.getId(), user.getToken());
-		mTimer.cancel();
+		mReadyToRefresh = false;
 	}
 
 	@Override

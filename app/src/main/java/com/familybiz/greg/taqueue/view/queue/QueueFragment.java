@@ -19,8 +19,6 @@ import com.familybiz.greg.taqueue.model.queue.QueueTA;
 import com.familybiz.greg.taqueue.network.QueueRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,6 +60,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 	// Network
 	private QueueRequest mQueueRequest;
 	protected Timer mTimer;
+	protected boolean mReadyToRefresh;
 
 	// Data
 	private QueueData mQueue;
@@ -71,6 +70,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		// Used to get an xml view file and use it multiple times
 		mInflater = inflater;
 		mTimer = new Timer();
+		mReadyToRefresh = true;
 
 		STUDENTS_BEING_HELPED = new HashMap<String, Set<String>>();
 
@@ -110,8 +110,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		mTAList.setBackgroundColor(getResources().getColor(R.color.background_color));
 		rootLayout.addView(mTAList, new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
-				0,
-				1));
+				ViewGroup.LayoutParams.WRAP_CONTENT));
 
 		// Queue label
 
@@ -130,8 +129,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		mStudentList.setBackgroundColor(getResources().getColor(R.color.background_color));
 		rootLayout.addView(mStudentList, new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
-				0,
-				1));
+				getResources().getDimensionPixelSize(R.dimen.label_height) * 2));
 
 		mStudentList.setOnItemClickListener(this);
 
@@ -142,6 +140,8 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 	public void onQueueInformationReceived(QueueData queue) {
 		mQueue = queue;
 		populateQueue(queue);
+		if (!mReadyToRefresh)
+			return;
 		mTimer.schedule(new RefreshQueue(), 1000);
 	}
 
@@ -152,23 +152,18 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		STUDENTS_BEING_HELPED.clear();
 		mTAListAdapter.clear();
 
-		// Sort them
 		QueueTA[] taArray = queue.getTAs();
-		Arrays.sort(taArray, new Comparator<QueueTA>() {
-			@Override
-			public int compare(QueueTA ta1, QueueTA ta2) {
-				return ta1.getUsername().compareTo(ta2.getUsername());
-			}
-		});
+
+		List<String> tas = new ArrayList<String>();
 
 		// Add them to the list
 		for (int i = 0; i < taArray.length; i++) {
 			QueueTA ta = taArray[i];
 
 			if (ta.getStudent() == null)
-				mTAListAdapter.add(ta.getUsername());
+				tas.add(ta.getUsername());
 			else {
-				mTAListAdapter.add(ta.getUsername() + " helping " + ta.getStudent().getUsername());
+				tas.add(ta.getUsername() + " helping " + ta.getStudent().getUsername());
 
 				// Store the student name and location
 				String username = ta.getStudent().getUsername();
@@ -179,20 +174,34 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 			}
 		}
 
+		// Check if there are no TA's on duty
+		if (tas.isEmpty())
+			mTAListAdapter.add(getString(R.string.no_tas_on_duty));
+		else
+			mTAListAdapter.addAll(tas);
+
 
 		// Populate the list of students in the queue
 
 		mStudentListAdapter.clear();
 
-		List<String> students = new ArrayList<String>();
 		QueueStudent[] studentArray = queue.getStudents();
+
+		// Check if there are no students in the queue
+
+		List<String> studentsInQueue = new ArrayList<String>();
+
 		for (int i = 0; i < studentArray.length; i++) {
-			String studentNameLocation = studentArray[i].getUsername() + " @ " + studentArray[i].getLocation();
-			if (studentArray[i].isInQueue())
-				students.add(studentNameLocation);
+			if (studentArray[i].isInQueue()) {
+				String studentNameLocation = studentArray[i].getUsername() + " @ " + studentArray[i].getLocation();
+				studentsInQueue.add(studentNameLocation);
+			}
 		}
 
-		mStudentListAdapter.addAll(students);
+		if (studentsInQueue.isEmpty())
+			mStudentListAdapter.add(getString(R.string.no_students_in_the_queue));
+		else
+			mStudentListAdapter.addAll(studentsInQueue);
 	}
 
 	protected QueueStudent getStudent(String name, String location) {
@@ -209,6 +218,8 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 	private class RefreshQueue extends TimerTask {
 		@Override
 		public void run() {
+			if (!mReadyToRefresh)
+				return;
 			User user = MainActivity.getUser();
 			mQueueRequest.updateQueue(user.getId(), user.getToken());
 		}

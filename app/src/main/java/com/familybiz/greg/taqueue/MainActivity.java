@@ -345,7 +345,10 @@ public class MainActivity extends Activity implements
 	 * Takes a name/location string and splits it properly to get the name and location out.
 	 */
 	public static String[] getNameAndLocation(String nameLocation) {
-		return nameLocation.split(" @ ");
+		String[] items = nameLocation.split(" @ ");
+		if (items.length == 1)
+			items = new String[] {"", ""};
+		return items;
 	}
 
 	/**
