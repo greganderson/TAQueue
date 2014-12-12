@@ -18,6 +18,13 @@ public class TARequest implements NetworkRequest.OnJsonObjectReceivedListener {
 		MainActivity.NETWORK_REQUEST.addOnJsonObjectReceivedListener(this);
 	}
 
+	/**
+	 * Clears out the extra listener when needing to be deleted.
+	 */
+	public void removeListener() {
+		MainActivity.NETWORK_REQUEST.removeOnJsonObjectReceivedListener(this);
+	}
+
 	public void createTA(String name, String password) {
 		try {
 			JSONObject params = new JSONObject();

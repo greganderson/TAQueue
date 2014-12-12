@@ -32,6 +32,13 @@ public class TALoginFragment extends LoginFragment implements TARequest.OnTACrea
 	}
 
 	@Override
+	public void onStop() {
+		mTARequest.removeListener();
+		mTARequest.setOnTACreatedListener(null);
+		super.onStop();
+	}
+
+	@Override
 	void makeNetworkCallToCreateUser(String name, String password) {
 		mTARequest.createTA(name, password);
 	}

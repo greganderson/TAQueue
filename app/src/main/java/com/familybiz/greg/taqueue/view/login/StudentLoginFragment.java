@@ -31,6 +31,13 @@ public class StudentLoginFragment extends LoginFragment implements StudentReques
 	}
 
 	@Override
+	public void onStop() {
+		mStudentRequest.removeListener();
+		mStudentRequest.setOnStudentCreatedListener(null);
+		super.onStop();
+	}
+
+	@Override
 	void makeNetworkCallToCreateUser(String name, String location) {
 		mStudentRequest.createStudent(name, location);
 	}

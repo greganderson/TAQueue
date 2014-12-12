@@ -18,6 +18,13 @@ public class StudentRequest implements NetworkRequest.OnJsonObjectReceivedListen
 		MainActivity.NETWORK_REQUEST.addOnJsonObjectReceivedListener(this);
 	}
 
+	/**
+	 * Clears out the extra listener when needing to be deleted.
+	 */
+	public void removeListener() {
+		MainActivity.NETWORK_REQUEST.removeOnJsonObjectReceivedListener(this);
+	}
+
 	public void createStudent(String name, String location) {
 		try {
 			JSONObject params = new JSONObject();
