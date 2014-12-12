@@ -342,6 +342,13 @@ public class MainActivity extends Activity implements
 	}
 
 	/**
+	 * Takes a name/location string and splits it properly to get the name and location out.
+	 */
+	public static String[] getNameAndLocation(String nameLocation) {
+		return nameLocation.split(" @ ");
+	}
+
+	/**
 	 * Listener for the ActionBar tabs.
 	 */
 	private class LoginTabListener implements ActionBar.TabListener {
