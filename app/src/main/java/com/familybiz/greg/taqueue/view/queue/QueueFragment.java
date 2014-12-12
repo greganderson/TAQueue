@@ -19,11 +19,7 @@ import com.familybiz.greg.taqueue.model.queue.QueueTA;
 import com.familybiz.greg.taqueue.network.QueueRequest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,15 +30,15 @@ import java.util.TimerTask;
  */
 public abstract class QueueFragment extends Fragment implements QueueRequest.OnQueueInformationReceivedListener, ListView.OnItemClickListener {
 
-	private static Map<String, Set<String>> STUDENTS_BEING_HELPED;
+	private static List<QueueStudent> mStudentsBeingHelped;
 
 	protected CharSequence[] mNotYetHelpedActionOptions;
 
 	protected CharSequence[] mAlreadyHelpedActionOptions;
 
 	public static boolean beingHelped(String name, String location) {
-		if (QueueFragment.STUDENTS_BEING_HELPED.containsKey(name))
-			if (QueueFragment.STUDENTS_BEING_HELPED.get(name).contains(location))
+		for (QueueStudent student : mStudentsBeingHelped)
+			if (student.getUsername().equals(name) && student.getLocation().equals(location))
 				return true;
 
 		// Student not being helped
@@ -72,7 +68,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		mTimer = new Timer();
 		mReadyToRefresh = true;
 
-		STUDENTS_BEING_HELPED = new HashMap<String, Set<String>>();
+		mStudentsBeingHelped = new ArrayList<QueueStudent>();
 
 		mNotYetHelpedActionOptions = new CharSequence[] {
 				getString(R.string.accept_student_action),
@@ -129,7 +125,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		mStudentList.setBackgroundColor(getResources().getColor(R.color.background_color));
 		rootLayout.addView(mStudentList, new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
-				getResources().getDimensionPixelSize(R.dimen.label_height) * 2));
+				ViewGroup.LayoutParams.WRAP_CONTENT));
 
 		mStudentList.setOnItemClickListener(this);
 
@@ -149,7 +145,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 
 		// Populate the list of TA's
 
-		STUDENTS_BEING_HELPED.clear();
+		mStudentsBeingHelped.clear();
 		mTAListAdapter.clear();
 
 		QueueTA[] taArray = queue.getTAs();
@@ -164,13 +160,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 				tas.add(ta.getUsername());
 			else {
 				tas.add(ta.getUsername() + " helping " + ta.getStudent().getUsername());
-
-				// Store the student name and location
-				String username = ta.getStudent().getUsername();
-				String location = ta.getStudent().getLocation();
-				if (!STUDENTS_BEING_HELPED.containsKey(username))
-					STUDENTS_BEING_HELPED.put(username, new HashSet<String>());
-				STUDENTS_BEING_HELPED.get(username).add(location);
+				mStudentsBeingHelped.add(ta.getStudent());
 			}
 		}
 
