@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="label_color">#BBBBBB</color>
-    <color name="ta_highlight_color">#FFD873</color>
     <color name="background_color">#EEEEEE</color>
+
+    <color name="yellowish">#FFD873</color>
+    <color name="redish">#E08484</color>
+    <color name="blueish">#84B1E0</color>
+    <color name="pinkish">#E084A9</color>
+    <color name="tealish">#84DCE0</color>
+    <color name="light_purplish">#DD84E0</color>
+    <color name="baby_blue">#8984E0</color>
+
+    <array name="ta_colors">
+        <item>@color/yellowish</item>
+        <item>@color/redish</item>
+        <item>@color/blueish</item>
+        <item>@color/pinkish</item>
+        <item>@color/tealish</item>
+        <item>@color/light_purplish</item>
+        <item>@color/baby_blue</item>
+    </array>
+
 </resources>

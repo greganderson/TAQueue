@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -55,10 +53,10 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 
 	// View
 	private LinearLayout rootLayout;
-	private LinearLayout.LayoutParams mLayoutParams;
-	private FrameLayout mTASection;
-	private ListView mList;
-	protected ArrayAdapter<String> mAdapter;
+	private ListView mStudentList;
+	private ListView mTAList;
+	protected ColorableStudentArrayAdapter mStudentListAdapter;
+	protected ColorableTAArrayAdapter mTAListAdapter;
 	private LayoutInflater mInflater;
 
 	// Network
@@ -87,10 +85,6 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		rootLayout = new LinearLayout(getActivity());
 		rootLayout.setOrientation(LinearLayout.VERTICAL);
 
-		mLayoutParams = new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
-
 		mQueueRequest = new QueueRequest();
 		mQueueRequest.setOnQueueInformationReceivedListener(this);
 
@@ -110,8 +104,14 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 
 		// TA list
 
-		mTASection = new FrameLayout(getActivity());
-		rootLayout.addView(mTASection, mLayoutParams);
+		mTAListAdapter = new ColorableTAArrayAdapter(getActivity(), R.layout.list_item);
+		mTAList = new ListView(getActivity());
+		mTAList.setAdapter(mTAListAdapter);
+		mTAList.setBackgroundColor(getResources().getColor(R.color.background_color));
+		rootLayout.addView(mTAList, new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				0,
+				1));
 
 		// Queue label
 
@@ -124,17 +124,16 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 
 		// Queue list
 
-		mAdapter = new ColorableArrayAdapter(getActivity(), R.layout.list_item);
-		mList = new ListView(getActivity());
-		mList.setAdapter(mAdapter);
-		mList.setBackgroundColor(getResources().getColor(R.color.background_color));
-		rootLayout.addView(mList, new LinearLayout.LayoutParams(
+		mStudentListAdapter = new ColorableStudentArrayAdapter(getActivity(), R.layout.list_item);
+		mStudentList = new ListView(getActivity());
+		mStudentList.setAdapter(mStudentListAdapter);
+		mStudentList.setBackgroundColor(getResources().getColor(R.color.background_color));
+		rootLayout.addView(mStudentList, new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
 				0,
-				1
-		));
+				1));
 
-		mList.setOnItemClickListener(this);
+		mStudentList.setOnItemClickListener(this);
 
 		return rootLayout;
 	}
@@ -150,9 +149,10 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 
 		// Populate the list of TA's
 
-		mTASection.removeAllViews();
 		STUDENTS_BEING_HELPED.clear();
+		mTAListAdapter.clear();
 
+		// Sort them
 		QueueTA[] taArray = queue.getTAs();
 		Arrays.sort(taArray, new Comparator<QueueTA>() {
 			@Override
@@ -161,18 +161,14 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 			}
 		});
 
+		// Add them to the list
 		for (int i = 0; i < taArray.length; i++) {
-			View listItemXml = mInflater.inflate(R.layout.list_item, null);
-			TextView taView = (TextView)listItemXml.findViewById(R.id.basic_list_item);
-			taView.setBackgroundColor(getResources().getColor(R.color.ta_highlight_color));
-			taView.setHeight(getResources().getDimensionPixelSize(R.dimen.list_item_height));
-			taView.setPadding(getResources().getDimensionPixelSize(R.dimen.list_item_left_padding), 0, 0, 0);
-
 			QueueTA ta = taArray[i];
+
 			if (ta.getStudent() == null)
-				taView.setText(ta.getUsername());
+				mTAListAdapter.add(ta.getUsername());
 			else {
-				taView.setText(ta.getUsername() + " helping " + ta.getStudent().getUsername());
+				mTAListAdapter.add(ta.getUsername() + " helping " + ta.getStudent().getUsername());
 
 				// Store the student name and location
 				String username = ta.getStudent().getUsername();
@@ -181,15 +177,12 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 					STUDENTS_BEING_HELPED.put(username, new HashSet<String>());
 				STUDENTS_BEING_HELPED.get(username).add(location);
 			}
-
-			mTASection.addView(taView, mLayoutParams);
 		}
-		mTASection.invalidate();
-		rootLayout.invalidate();
+
 
 		// Populate the list of students in the queue
 
-		mAdapter.clear();
+		mStudentListAdapter.clear();
 
 		List<String> students = new ArrayList<String>();
 		QueueStudent[] studentArray = queue.getStudents();
@@ -199,7 +192,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 				students.add(studentNameLocation);
 		}
 
-		mAdapter.addAll(students);
+		mStudentListAdapter.addAll(students);
 	}
 
 	protected QueueStudent getStudent(String name, String location) {
