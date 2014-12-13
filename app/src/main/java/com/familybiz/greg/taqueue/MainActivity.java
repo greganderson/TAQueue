@@ -260,8 +260,8 @@ public class MainActivity extends Activity implements
 		invalidateOptionsMenu();
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_layout, mStudentQueueFragment, getString(R.string.queue_fragment_tag));
-		transaction.addToBackStack(getString(R.string.queue_fragment_tag));
+		transaction.replace(R.id.fragment_layout, mStudentQueueFragment);
+		transaction.addToBackStack(null);
 		transaction.commit();
 
 	}
@@ -291,8 +291,8 @@ public class MainActivity extends Activity implements
 		invalidateOptionsMenu();
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_layout, mTAQueueFragment, getString(R.string.queue_fragment_tag));
-		transaction.addToBackStack(getString(R.string.queue_fragment_tag));
+		transaction.replace(R.id.fragment_layout, mTAQueueFragment);
+		transaction.addToBackStack(null);
 		transaction.commit();
 	}
 

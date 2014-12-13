@@ -11,6 +11,8 @@
     <string name="login_button">Login</string>
     <string name="ta_list_label">TA\'s</string>
     <string name="queue_label">Queue</string>
+    <string name="queue_frozen_label">Queue (Frozen)</string>
+    <string name="queue_deactivated_label">Queue (Deactivated)</string>
     <string name="school_list_label">Schools</string>
     <string name="instructor_list_label">Instructors</string>
     <string name="queue_list_label">Classes</string>
@@ -27,6 +29,5 @@
     <string name="put_student_back_action">Put Back</string>
     <string name="no_tas_on_duty">No TA\'s on duty.</string>
     <string name="no_students_in_the_queue">No students in the queue.</string>
-    <string name="queue_fragment_tag">QUEUE_FRAGMENT</string>
 
 </resources>

@@ -2,6 +2,8 @@
 <resources>
     <color name="label_color">#BBBBBB</color>
     <color name="background_color">#EEEEEE</color>
+    <color name="queue_deactivated_background">#FCBDA4</color>
+    <color name="queue_frozen_background">#94F3FF</color>
 
     <color name="yellowish">#FFD873</color>
     <color name="redish">#E08484</color>

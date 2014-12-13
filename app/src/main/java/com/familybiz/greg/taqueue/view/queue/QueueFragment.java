@@ -57,6 +57,8 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 	protected ColorableStudentArrayAdapter mStudentListAdapter;
 	protected ColorableTAArrayAdapter mTAListAdapter;
 	private LayoutInflater mInflater;
+	private TextView mTALabelView;
+	private TextView mQueueLabelView;
 
 	// Network
 	protected QueueRequest mQueueRequest;
@@ -99,11 +101,12 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		// TA label
 
 		View labelLayoutTA = mInflater.inflate(R.layout.label_layout, null);
-		TextView taLabelView = (TextView)labelLayoutTA.findViewById(R.id.label_layout);
-		taLabelView.setText(getString(R.string.ta_list_label));
-		rootLayout.addView(taLabelView, new LinearLayout.LayoutParams(
+		mTALabelView = (TextView)labelLayoutTA.findViewById(R.id.label_layout);
+		mTALabelView.setText(getString(R.string.ta_list_label));
+		mTALabelView.setMinHeight(getResources().getDimensionPixelSize(R.dimen.label_height));
+		rootLayout.addView(mTALabelView, new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
-				getResources().getDimensionPixelSize(R.dimen.label_height)));
+				ViewGroup.LayoutParams.WRAP_CONTENT));
 
 		// TA list
 
@@ -118,9 +121,9 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		// Queue label
 
 		View queueLabelViewXml = mInflater.inflate(R.layout.label_layout, null);
-		TextView queueLabelView = (TextView)queueLabelViewXml.findViewById(R.id.label_layout);
-		queueLabelView.setText(getString(R.string.queue_label));
-		rootLayout.addView(queueLabelView, new LinearLayout.LayoutParams(
+		mQueueLabelView = (TextView)queueLabelViewXml.findViewById(R.id.label_layout);
+		mQueueLabelView.setText(getString(R.string.queue_label));
+		rootLayout.addView(mQueueLabelView, new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
 				getResources().getDimensionPixelSize(R.dimen.label_height)));
 
@@ -151,9 +154,35 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 	public void onQueueInformationReceived(QueueData queue) {
 		mQueue = queue;
 		populateQueue(queue);
+		checkQueueSettings();
 		if (!mReadyToRefresh)
 			return;
 		mTimer.schedule(new RefreshQueue(), 1000);
+	}
+
+	private void checkQueueSettings() {
+		// Update status
+		mTALabelView.setText(getString(R.string.ta_list_label) + ": " + mQueue.getStatus());
+
+		// Active/frozen
+
+		if (!mQueue.isActive()) {
+			// Not active, disable entering queue and set background
+			mQueueLabelView.setBackgroundColor(getResources().getColor(R.color.queue_deactivated_background));
+			mQueueLabelView.setText(getString(R.string.queue_deactivated_label));
+		}
+		else if (mQueue.isFrozen()) {
+			// Frozen, disable entering queue and set background
+			mQueueLabelView.setBackgroundColor(getResources().getColor(R.color.queue_frozen_background));
+			mQueueLabelView.setText(getString(R.string.queue_frozen_label));
+		}
+		else {
+			// Must be good to go!
+			mQueueLabelView.setBackgroundColor(getResources().getColor(R.color.background_color));
+			mQueueLabelView.setText(getString(R.string.queue_label));
+		}
+
+
 	}
 
 	private void populateQueue(QueueData queue) {
