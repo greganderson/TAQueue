@@ -3,6 +3,7 @@ package com.familybiz.greg.taqueue.network;
 import android.util.Log;
 
 import com.familybiz.greg.taqueue.MainActivity;
+import com.familybiz.greg.taqueue.model.User;
 import com.familybiz.greg.taqueue.model.queue.QueueData;
 import com.familybiz.greg.taqueue.model.queue.QueueStudent;
 import com.familybiz.greg.taqueue.model.queue.QueueTA;
@@ -26,6 +27,11 @@ public class QueueRequest implements NetworkRequest.OnJsonObjectReceivedListener
 	public void updateQueue(String id, String token) {
 		String url = "/queue";
 		MainActivity.NETWORK_REQUEST.executeGetRequest(url, id, token);
+	}
+
+	public void deleteUser(String userUrl) {
+		User user = MainActivity.getUser();
+		MainActivity.NETWORK_REQUEST.executeDeleteRequest("/" + userUrl + "/" + user.getId(), user.getId(), user.getToken());
 	}
 
 	@Override

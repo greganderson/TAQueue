@@ -48,6 +48,11 @@ public class SchoolListFragment extends ListFragment {
 		return rootLayout;
 	}
 
+	@Override
+	public void onStop() {
+		mSchoolRequest.clearNetworkListener();
+		super.onStop();
+	}
 
 	/**
 	 * Finds the school with the given name.  Returns null if it doesn't exist.

@@ -27,6 +27,8 @@ import java.util.Set;
  */
 public class NetworkRequest {
 
+	// TODO: Consider changing all StringRequests to NetworkResponseRequest.
+
 	private String BASE_URL = "http://nine.eng.utah.edu";
 
 	private RequestQueue mQueue;
@@ -144,6 +146,8 @@ public class NetworkRequest {
 					@Override
 					public void onResponse(String response) {
 						// TODO: Check for response code to make sure it worked
+						if (mOnDeleteRequestSuccessListener != null)
+							mOnDeleteRequestSuccessListener.onDeleteRequestSuccess();
 					}
 				},
 				new Response.ErrorListener() {
@@ -262,10 +266,13 @@ public class NetworkRequest {
 	public interface OnJsonObjectReceivedListener {
 		public void onJsonObjectReceived(String jsonObject);
 	}
+
 	private Set<OnJsonObjectReceivedListener> mOnJsonObjectReceivedListeners = new HashSet<OnJsonObjectReceivedListener>();
+
 	public void addOnJsonObjectReceivedListener(OnJsonObjectReceivedListener onJsonObjectReceivedListener) {
 		mOnJsonObjectReceivedListeners.add(onJsonObjectReceivedListener);
 	}
+
 	public void removeOnJsonObjectReceivedListener(OnJsonObjectReceivedListener onJsonObjectReceivedListener) {
 		mOnJsonObjectReceivedListeners.remove(onJsonObjectReceivedListener);
 	}
@@ -275,11 +282,26 @@ public class NetworkRequest {
 	public interface OnJsonArrayReceivedListener {
 		public void onJsonArrayReceived(String jsonArray);
 	}
+
 	private Set<OnJsonArrayReceivedListener> mOnJsonArrayReceivedListeners = new HashSet<OnJsonArrayReceivedListener>();
+
 	public void addOnJsonArrayReceivedListener(OnJsonArrayReceivedListener onJsonArrayReceivedListener) {
 		mOnJsonArrayReceivedListeners.add(onJsonArrayReceivedListener);
 	}
+
 	public void removeOnJsonArrayReceivedListener(OnJsonArrayReceivedListener onJsonArrayReceivedListener) {
 		mOnJsonArrayReceivedListeners.remove(onJsonArrayReceivedListener);
+	}
+
+	// Delete request
+
+	public interface OnDeleteRequestSuccessListener {
+		public void onDeleteRequestSuccess();
+	}
+
+	private OnDeleteRequestSuccessListener mOnDeleteRequestSuccessListener;
+
+	public void setOnDeleteRequestSuccessListener(OnDeleteRequestSuccessListener onDeleteRequestSuccessListener) {
+		mOnDeleteRequestSuccessListener = onDeleteRequestSuccessListener;
 	}
 }

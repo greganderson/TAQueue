@@ -16,6 +16,7 @@ import com.familybiz.greg.taqueue.model.User;
 import com.familybiz.greg.taqueue.model.queue.QueueData;
 import com.familybiz.greg.taqueue.model.queue.QueueStudent;
 import com.familybiz.greg.taqueue.model.queue.QueueTA;
+import com.familybiz.greg.taqueue.network.NetworkRequest;
 import com.familybiz.greg.taqueue.network.QueueRequest;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ import java.util.TimerTask;
  *
  * Created by Greg Anderson
  */
-public abstract class QueueFragment extends Fragment implements QueueRequest.OnQueueInformationReceivedListener, ListView.OnItemClickListener {
+public abstract class QueueFragment extends Fragment implements QueueRequest.OnQueueInformationReceivedListener, ListView.OnItemClickListener, NetworkRequest.OnDeleteRequestSuccessListener {
 
 	private static List<StudentNameLocationTA> mStudentsBeingHelped;
 
@@ -58,7 +59,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 	private LayoutInflater mInflater;
 
 	// Network
-	private QueueRequest mQueueRequest;
+	protected QueueRequest mQueueRequest;
 	protected Timer mTimer;
 	protected boolean mReadyToRefresh;
 
@@ -73,6 +74,8 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		mReadyToRefresh = true;
 
 		mStudentsBeingHelped = new ArrayList<StudentNameLocationTA>();
+
+		MainActivity.NETWORK_REQUEST.setOnDeleteRequestSuccessListener(this);
 
 		mNotYetHelpedActionOptions = new CharSequence[] {
 				getString(R.string.accept_student_action),
@@ -134,6 +137,14 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		mStudentList.setOnItemClickListener(this);
 
 		return rootLayout;
+	}
+
+	@Override
+	public void onStop() {
+		mTimer.cancel();
+		mReadyToRefresh = false;
+		MainActivity.NETWORK_REQUEST.setOnDeleteRequestSuccessListener(null);
+		super.onStop();
 	}
 
 	@Override
@@ -221,6 +232,15 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		}
 	}
 
+	@Override
+	public void onDeleteRequestSuccess() {
+		// This should be redundant, but I was having some issues with it not working before
+		mReadyToRefresh = false;
+		mTimer.cancel();
+		if (mOnSignOutListener != null)
+			mOnSignOutListener.onSignOut();
+	}
+
 	/**
 	 * Helper class for finding if a student is being helped, and which TA is helping.  Used for
 	 * getting the right background color.
@@ -244,4 +264,20 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 
 	@Override
 	abstract public void onItemClick(AdapterView<?> adapterView, View view, int i, long l);
+
+
+	/***************************** LISTENERS *****************************/
+
+
+	// Sign out
+
+	public interface OnSignOutListener {
+		public void onSignOut();
+	}
+
+	private OnSignOutListener mOnSignOutListener;
+
+	public void setOnSignOutListener(OnSignOutListener onSignOutListener) {
+		mOnSignOutListener = onSignOutListener;
+	}
 }

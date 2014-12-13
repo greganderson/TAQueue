@@ -22,6 +22,7 @@ import com.familybiz.greg.taqueue.view.lists.QueueListFragment;
 import com.familybiz.greg.taqueue.view.lists.SchoolListFragment;
 import com.familybiz.greg.taqueue.view.login.StudentLoginFragment;
 import com.familybiz.greg.taqueue.view.login.TALoginFragment;
+import com.familybiz.greg.taqueue.view.queue.QueueFragment;
 import com.familybiz.greg.taqueue.view.queue.StudentQueueFragment;
 import com.familybiz.greg.taqueue.view.queue.TAQueueFragment;
 
@@ -45,7 +46,8 @@ public class MainActivity extends Activity implements
 		InstructorListFragment.OnInstructorSelectedListener,
 		QueueListFragment.OnQueueSelectedListener,
 		StudentLoginFragment.OnStudentLoginSuccessListener,
-		TALoginFragment.OnTALoginSuccessListener {
+		TALoginFragment.OnTALoginSuccessListener,
+		QueueFragment.OnSignOutListener {
 
 	// Global access to the networking class, TODO: Which might be a bad idea
 	public static NetworkRequest NETWORK_REQUEST;
@@ -67,6 +69,7 @@ public class MainActivity extends Activity implements
 	private TALoginFragment mTALoginFragment;
 	private StudentQueueFragment mStudentQueueFragment;
 	private TAQueueFragment mTAQueueFragment;
+	private boolean mOnQueueScreen; // Used for overriding the back button
 
 	// ActionBar
 	private ActionBar mActionBar;
@@ -83,6 +86,8 @@ public class MainActivity extends Activity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		mOnQueueScreen = false;
 
 		NETWORK_REQUEST = new NetworkRequest(this);
 
@@ -115,19 +120,13 @@ public class MainActivity extends Activity implements
 		mActionBar = getActionBar();
 		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
-		ActionBar.Tab studentTab = mActionBar.newTab().setText(getString(R.string.student));
-		ActionBar.Tab taTab = mActionBar.newTab().setText(getString(R.string.ta));
-
-		studentTab.setTabListener(new LoginTabListener(mStudentLoginFragment));
-		taTab.setTabListener(new LoginTabListener(mTALoginFragment));
-
-		mActionBar.addTab(studentTab);
-		mActionBar.addTab(taTab);
-
 		// Actual queue
 
 		mStudentQueueFragment = new StudentQueueFragment();
+		mStudentQueueFragment.setOnSignOutListener(this);
+
 		mTAQueueFragment = new TAQueueFragment();
+		mTAQueueFragment.setOnSignOutListener(this);
 
 		FragmentTransaction addTransaction = getFragmentManager().beginTransaction();
 		addTransaction.add(R.id.fragment_layout, mSchoolListFragment);
@@ -193,15 +192,31 @@ public class MainActivity extends Activity implements
 		transaction.addToBackStack(null);
 		transaction.commit();
 
+		// Load the action bar
 
-		// Bring on the actionbar
+		mActionBar.removeAllTabs();
+
+		ActionBar.Tab studentTab = mActionBar.newTab().setText(getString(R.string.student));
+		ActionBar.Tab taTab = mActionBar.newTab().setText(getString(R.string.ta));
+
+		studentTab.setTabListener(new LoginTabListener(mStudentLoginFragment));
+		taTab.setTabListener(new LoginTabListener(mTALoginFragment));
+
+		mActionBar.addTab(studentTab);
+		mActionBar.addTab(taTab);
+
 		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		invalidateOptionsMenu();
 	}
 
 	@Override
 	public void onBackPressed() {
+		// Check to see if the user was on the queue screen, ignoring it if they are
+		if (mOnQueueScreen)
+			return;
+
 		clearActionBarAndLoadingCircle();
+
 		super.onBackPressed();
 	}
 
@@ -226,6 +241,7 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onStudentLoginSuccess(Student student) {
 		mUser = student;
+		mOnQueueScreen = true;
 
 		clearActionBarAndLoadingCircle();
 
@@ -244,8 +260,8 @@ public class MainActivity extends Activity implements
 		invalidateOptionsMenu();
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_layout, mStudentQueueFragment);
-		transaction.addToBackStack(null);
+		transaction.replace(R.id.fragment_layout, mStudentQueueFragment, getString(R.string.queue_fragment_tag));
+		transaction.addToBackStack(getString(R.string.queue_fragment_tag));
 		transaction.commit();
 
 	}
@@ -253,6 +269,7 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onTALoginSuccess(TA ta) {
 		mUser = ta;
+		mOnQueueScreen = true;
 
 		clearActionBarAndLoadingCircle();
 
@@ -274,13 +291,30 @@ public class MainActivity extends Activity implements
 		invalidateOptionsMenu();
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_layout, mTAQueueFragment);
-		transaction.addToBackStack(null);
+		transaction.replace(R.id.fragment_layout, mTAQueueFragment, getString(R.string.queue_fragment_tag));
+		transaction.addToBackStack(getString(R.string.queue_fragment_tag));
 		transaction.commit();
 	}
 
 	public static User getUser() {
 		return mUser;
+	}
+
+	/**
+	 * Takes a name/location string and splits it properly to get the name and location out.
+	 */
+	public static String[] getNameAndLocation(String nameLocation) {
+		String[] items = nameLocation.split(" @ ");
+		if (items.length == 1)
+			items = new String[] {"", ""};
+		return items;
+	}
+
+	@Override
+	public void onSignOut() {
+		mUser = null;
+		mOnQueueScreen = false;
+		onQueueSelected(mSelectedQueue);
 	}
 
 	private void saveToFile() {
@@ -341,15 +375,6 @@ public class MainActivity extends Activity implements
 		}
 	}
 
-	/**
-	 * Takes a name/location string and splits it properly to get the name and location out.
-	 */
-	public static String[] getNameAndLocation(String nameLocation) {
-		String[] items = nameLocation.split(" @ ");
-		if (items.length == 1)
-			items = new String[] {"", ""};
-		return items;
-	}
 
 	/**
 	 * Listener for the ActionBar tabs.

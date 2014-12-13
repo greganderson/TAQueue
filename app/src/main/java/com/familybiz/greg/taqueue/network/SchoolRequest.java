@@ -21,8 +21,10 @@ public class SchoolRequest implements NetworkRequest.OnJsonArrayReceivedListener
 
 	public SchoolRequest() {
 		MainActivity.NETWORK_REQUEST.addOnJsonArrayReceivedListener(this);
+	}
 
-		// TODO: Figure out when to remove this from the NETWORK_REQUEST listeners.
+	public void clearNetworkListener() {
+		MainActivity.NETWORK_REQUEST.removeOnJsonArrayReceivedListener(this);
 	}
 
 	public void populateSchoolData() {

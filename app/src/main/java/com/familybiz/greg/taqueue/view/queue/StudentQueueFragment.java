@@ -4,7 +4,6 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.familybiz.greg.taqueue.MainActivity;
-import com.familybiz.greg.taqueue.model.User;
 
 /**
  * Created by Greg Anderson
@@ -20,8 +19,7 @@ public class StudentQueueFragment extends QueueFragment {
 	}
 
 	public void signOut() {
-		User user = MainActivity.getUser();
-		MainActivity.NETWORK_REQUEST.executeDeleteRequest("/students/" + user.getId(), user.getId(), user.getToken());
+		mQueueRequest.deleteUser("students");
 		mReadyToRefresh = false;
 	}
 
