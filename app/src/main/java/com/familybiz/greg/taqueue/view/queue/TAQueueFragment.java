@@ -10,6 +10,7 @@ import com.familybiz.greg.taqueue.MainActivity;
 import com.familybiz.greg.taqueue.R;
 import com.familybiz.greg.taqueue.model.User;
 import com.familybiz.greg.taqueue.model.queue.QueueStudent;
+import com.familybiz.greg.taqueue.model.queue.QueueTA;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +19,17 @@ import org.json.JSONObject;
  * Created by Greg Anderson
  */
 public class TAQueueFragment extends QueueFragment {
+
+	/**
+	 * Returns the QueueTA object of the user.
+	 */
+	private QueueTA getSelfData() {
+		String id = MainActivity.getUser().getId();
+		for (QueueTA ta : mQueue.getTAs())
+			if (ta.getId().equals(id))
+				return ta;
+		return null;
+	}
 
 	public void activateQueue()  {
 		setActiveQueue(true);
@@ -110,13 +122,21 @@ public class TAQueueFragment extends QueueFragment {
 		builder.setTitle(getString(R.string.ta_selecting_student_popup_label));
 
 		// Student hasn't been helped
-		if (!QueueFragment.beingHelped(name, location)) {
+		if (QueueFragment.indexOfHelpingTA(name, location) == -1) {
 			builder.setItems(mNotYetHelpedActionOptions, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialogInterface, int i) {
 					String clicked = mNotYetHelpedActionOptions[i].toString();
-					if (clicked.equals(getString(R.string.accept_student_action)))
+					if (clicked.equals(getString(R.string.accept_student_action))) {
+
+						// If already helping a student, remove that student and accept the new one.
+						QueueTA ta = getSelfData();
+						QueueStudent student = ta.getStudent();
+						if (student != null)
+							removeStudent(student.getUsername(), student.getLocation());
+
 						acceptStudent(name, location);
+					}
 					else
 						removeStudent(name, location);
 				}

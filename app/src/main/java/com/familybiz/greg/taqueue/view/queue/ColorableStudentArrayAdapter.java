@@ -32,8 +32,9 @@ public class ColorableStudentArrayAdapter extends ArrayAdapter<String> {
 		String name = items[0];
 		String location = items[1];
 
-		if (QueueFragment.beingHelped(name, location))
-			textView.setBackgroundColor(mColors[0]);
+		int taLocation = QueueFragment.indexOfHelpingTA(name, location);
+		if (taLocation != -1)
+			textView.setBackgroundColor(mColors[taLocation]);
 		else
 			textView.setBackgroundColor(getContext().getResources().getColor(R.color.background_color));
 

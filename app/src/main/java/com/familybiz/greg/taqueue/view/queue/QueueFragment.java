@@ -30,19 +30,23 @@ import java.util.TimerTask;
  */
 public abstract class QueueFragment extends Fragment implements QueueRequest.OnQueueInformationReceivedListener, ListView.OnItemClickListener {
 
-	private static List<QueueStudent> mStudentsBeingHelped;
+	private static List<StudentNameLocationTA> mStudentsBeingHelped;
 
 	protected CharSequence[] mNotYetHelpedActionOptions;
 
 	protected CharSequence[] mAlreadyHelpedActionOptions;
 
-	public static boolean beingHelped(String name, String location) {
-		for (QueueStudent student : mStudentsBeingHelped)
-			if (student.getUsername().equals(name) && student.getLocation().equals(location))
-				return true;
+	/**
+	 * Takes the name and location of a student and gets the index of the TA helping them if they
+	 * are being helped, returns -1 otherwise.
+	 */
+	public static int indexOfHelpingTA(String name, String location) {
+		for (StudentNameLocationTA student : mStudentsBeingHelped)
+			if (student.mName.equals(name) && student.mLocation.equals(location))
+				return student.mTALocation;
 
 		// Student not being helped
-		return false;
+		return -1;
 	}
 
 	// View
@@ -59,7 +63,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 	protected boolean mReadyToRefresh;
 
 	// Data
-	private QueueData mQueue;
+	protected QueueData mQueue;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,7 +72,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		mTimer = new Timer();
 		mReadyToRefresh = true;
 
-		mStudentsBeingHelped = new ArrayList<QueueStudent>();
+		mStudentsBeingHelped = new ArrayList<StudentNameLocationTA>();
 
 		mNotYetHelpedActionOptions = new CharSequence[] {
 				getString(R.string.accept_student_action),
@@ -159,8 +163,10 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 			if (ta.getStudent() == null)
 				tas.add(ta.getUsername());
 			else {
-				tas.add(ta.getUsername() + " helping " + ta.getStudent().getUsername());
-				mStudentsBeingHelped.add(ta.getStudent());
+				QueueStudent student = ta.getStudent();
+				tas.add(ta.getUsername() + " helping " + student.getUsername());
+
+				mStudentsBeingHelped.add(new StudentNameLocationTA(student.getUsername(), student.getLocation(), i, ta.getId()));
 			}
 		}
 
@@ -212,6 +218,25 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 				return;
 			User user = MainActivity.getUser();
 			mQueueRequest.updateQueue(user.getId(), user.getToken());
+		}
+	}
+
+	/**
+	 * Helper class for finding if a student is being helped, and which TA is helping.  Used for
+	 * getting the right background color.
+	 */
+	private class StudentNameLocationTA {
+
+		public String mName;
+		public String mLocation;
+		public int mTALocation;
+		public String mTAId;
+
+		public StudentNameLocationTA(String name, String location, int taLocation, String taId) {
+			mName = name;
+			mLocation = location;
+			mTALocation = taLocation;
+			mTAId = taId;
 		}
 	}
 
