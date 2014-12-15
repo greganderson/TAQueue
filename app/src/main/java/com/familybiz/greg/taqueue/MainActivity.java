@@ -2,12 +2,17 @@ package com.familybiz.greg.taqueue;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.familybiz.greg.taqueue.model.Instructor;
@@ -83,6 +88,9 @@ public class MainActivity extends Activity implements
 	// Current user data
 	private static User mUser;
 
+	// Options menu for changing what is shown depending on which screen the user is on
+	private int mTAOptionsMenuItem = Menu.FIRST;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -137,23 +145,57 @@ public class MainActivity extends Activity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_main, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
+		String title = item.getTitle().toString();
 
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings) {
+		// Only available if user is a TA
+		if (title.equals(getString(R.string.queue_status_options_menu_label))) {
+			final EditText statusView = new EditText(this);
+
+			// Set the maximum number of characters allowed
+			// 51 characters fits the full line of the input box on the browser version (at least on
+			// my screen in chome)
+			int maxLength = 51;
+			statusView.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+			statusView.setHint(getString(R.string.change_queue_status_edittext_hint));
+
+			// Build the alert dialog
+			new AlertDialog.Builder(this)
+					.setTitle(getString(R.string.change_queue_status_title))
+					.setCancelable(true)
+					.setView(statusView)
+					.setPositiveButton(getString(R.string.change_queue_status_ok_label), new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialogInterface, int i) {
+							mTAQueueFragment.changeStatus(statusView.getText().toString());
+						}
+					})
+					.setNegativeButton(getString(R.string.change_queue_status_cancel_label), new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialogInterface, int i) {
+							// Do nothing
+						}
+					})
+					.show();
 			return true;
 		}
 
 		return super.onOptionsItemSelected(item);
+	}
+
+	/**
+	 * Set the options menu for when the user is a TA.
+	 */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.clear();
+		if (mUser != null && mUser.getUserType().equals(User.TA))
+			menu.add(0, mTAOptionsMenuItem, 0, getString(R.string.queue_status_options_menu_label));
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	/**
@@ -321,6 +363,9 @@ public class MainActivity extends Activity implements
 		try {
 			JSONObject data = new JSONObject();
 
+			if (mUser == null)
+				return;
+
 			data.put(USER_TYPE, mUser.getUserType());
 			data.put(ID, mUser.getId());
 			data.put(TOKEN, mUser.getToken());
@@ -365,7 +410,7 @@ public class MainActivity extends Activity implements
 			}
 		}
 		catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Log.i("LOAD", "Error loading saved file, maybe there was nothing saved.");
 		}
 		catch (IOException e) {
 			e.printStackTrace();

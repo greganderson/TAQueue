@@ -104,6 +104,21 @@ public class TAQueueFragment extends QueueFragment {
 		MainActivity.NETWORK_REQUEST.executeGetRequest("/students/" + student.getId() + "/" + action, user.getId(), user.getToken());
 	}
 
+	public void changeStatus(String status) {
+		JSONObject params = new JSONObject();
+		JSONObject options = new JSONObject();
+		try {
+			options.put("status", status);
+			params.put("queue", options);
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		User user = MainActivity.getUser();
+		MainActivity.NETWORK_REQUEST.executePutRequest("/queue", params, user.getId(), user.getToken());
+	}
+
 	@Override
 	public void signOut() {
 		mQueueRequest.deleteUser("tas");

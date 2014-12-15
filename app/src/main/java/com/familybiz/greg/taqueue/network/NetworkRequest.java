@@ -194,7 +194,8 @@ public class NetworkRequest {
 				new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						Log.e("Put request error", "Something went wrong.");
+						// TODO: Figure out a better way to do something, anything here.  The request
+						// TODO: needs to change to something else.
 					}
 				}){
 

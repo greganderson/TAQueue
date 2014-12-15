@@ -160,7 +160,7 @@ public abstract class QueueFragment extends Fragment implements QueueRequest.OnQ
 		mTimer.schedule(new RefreshQueue(), 1000);
 	}
 
-	private void checkQueueSettings() {
+	protected void checkQueueSettings() {
 		// Update status
 		mTALabelView.setText(getString(R.string.ta_list_label) + ": " + mQueue.getStatus());
 

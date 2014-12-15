@@ -29,5 +29,10 @@
     <string name="put_student_back_action">Put Back</string>
     <string name="no_tas_on_duty">No TA\'s on duty.</string>
     <string name="no_students_in_the_queue">No students in the queue.</string>
+    <string name="queue_status_options_menu_label">Change queue status</string>
+    <string name="change_queue_status_edittext_hint">Queue status...</string>
+    <string name="change_queue_status_title">Status</string>
+    <string name="change_queue_status_ok_label">Save</string>
+    <string name="change_queue_status_cancel_label">Cancel</string>
 
 </resources>
