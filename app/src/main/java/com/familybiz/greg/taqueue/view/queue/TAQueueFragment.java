@@ -43,18 +43,14 @@ public class TAQueueFragment extends QueueFragment {
 	 * Helper method for activating and deactivating the queue.
 	 */
 	private void setActiveQueue(boolean active) {
-		JSONObject params = new JSONObject();
 		JSONObject options = new JSONObject();
 		try {
 			options.put("active", active);
-			params.put("queue", options);
+			changeQueueAttributes(options);
 		}
 		catch (JSONException e) {
 			e.printStackTrace();
 		}
-
-		User user = MainActivity.getUser();
-		MainActivity.NETWORK_REQUEST.executePutRequest("/queue", params, user.getId(), user.getToken());
 	}
 
 	public void freezeQueue() {
@@ -69,18 +65,14 @@ public class TAQueueFragment extends QueueFragment {
 	 * Helper method for freezing and unfreezing the queue.
 	 */
 	private void setFrozenQueue(boolean frozen) {
-		JSONObject params = new JSONObject();
 		JSONObject options = new JSONObject();
 		try {
 			options.put("frozen", frozen);
-			params.put("queue", options);
+			changeQueueAttributes(options);
 		}
 		catch (JSONException e) {
 			e.printStackTrace();
 		}
-
-		User user = MainActivity.getUser();
-		MainActivity.NETWORK_REQUEST.executePutRequest("/queue", params, user.getId(), user.getToken());
 	}
 
 	public void acceptStudent(String name, String location) {
@@ -104,11 +96,43 @@ public class TAQueueFragment extends QueueFragment {
 		MainActivity.NETWORK_REQUEST.executeGetRequest("/students/" + student.getId() + "/" + action, user.getId(), user.getToken());
 	}
 
+
+	/**
+	 * Changes the queue status to the provided string.
+	 */
 	public void changeStatus(String status) {
-		JSONObject params = new JSONObject();
 		JSONObject options = new JSONObject();
 		try {
 			options.put("status", status);
+			changeQueueAttributes(options);
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Changes the queue to being question based (or not).
+	 */
+	public void changeIsQuestionBased(boolean isQuestionBased) {
+		// TODO: Check why server won't let the queue be question based.
+		JSONObject options = new JSONObject();
+		try {
+			options.put("is_question_based", isQuestionBased);
+			changeQueueAttributes(options);
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Helper method for all methods that change the attributes of the queue.  Makes the network
+	 * calls with the correct parameters.
+	 */
+	private void changeQueueAttributes(JSONObject options) {
+		JSONObject params = new JSONObject();
+		try {
 			params.put("queue", options);
 		}
 		catch (JSONException e) {

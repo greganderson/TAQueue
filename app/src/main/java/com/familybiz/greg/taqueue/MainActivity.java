@@ -89,7 +89,8 @@ public class MainActivity extends Activity implements
 	private static User mUser;
 
 	// Options menu for changing what is shown depending on which screen the user is on
-	private int mTAOptionsMenuItem = Menu.FIRST;
+	private int mTAOptionsMenuQueueStatus = Menu.FIRST;
+	private int mTAOptionsMenuIsQuestionBased = Menu.FIRST;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -184,6 +185,28 @@ public class MainActivity extends Activity implements
 			return true;
 		}
 
+		// TODO: Check why making the queue question based isn't working (on the server end)
+		// TODO: NOTE!  THIS MENU ITEM WILL NOT DO ANYTHING UNTIL THE SERVER IS FIXED!
+		else if (title.equals(getString(R.string.ta_options_menu_is_question_based_label))) {
+			new AlertDialog.Builder(this)
+					.setTitle(getString(R.string.queue_is_question_based_dialog_title))
+					.setCancelable(true)
+					.setPositiveButton(getString(R.string.is_queue_question_based_yes_label), new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialogInterface, int i) {
+							mTAQueueFragment.changeIsQuestionBased(true);
+						}
+					})
+					.setNegativeButton(getString(R.string.is_queue_question_based_no_label), new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialogInterface, int i) {
+							mTAQueueFragment.changeIsQuestionBased(false);
+						}
+					})
+					.show();
+			return true;
+		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -193,8 +216,10 @@ public class MainActivity extends Activity implements
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
-		if (mUser != null && mUser.getUserType().equals(User.TA))
-			menu.add(0, mTAOptionsMenuItem, 0, getString(R.string.queue_status_options_menu_label));
+		if (mUser != null && mUser.getUserType().equals(User.TA)) {
+			menu.add(0, mTAOptionsMenuQueueStatus, 0, getString(R.string.queue_status_options_menu_label));
+			menu.add(0, mTAOptionsMenuIsQuestionBased, 0, getString(R.string.ta_options_menu_is_question_based_label));
+		}
 		return super.onPrepareOptionsMenu(menu);
 	}
 

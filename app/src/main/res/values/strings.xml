@@ -34,5 +34,9 @@
     <string name="change_queue_status_title">Status</string>
     <string name="change_queue_status_ok_label">Save</string>
     <string name="change_queue_status_cancel_label">Cancel</string>
+    <string name="ta_options_menu_is_question_based_label">Question Based</string>
+    <string name="is_queue_question_based_yes_label">Yes</string>
+    <string name="is_queue_question_based_no_label">No</string>
+    <string name="queue_is_question_based_dialog_title">Is queue question based</string>
 
 </resources>
