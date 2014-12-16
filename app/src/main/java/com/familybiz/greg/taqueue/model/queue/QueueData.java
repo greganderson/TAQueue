@@ -59,4 +59,16 @@ public class QueueData {
 	public QueueTA[] getTAs() {
 		return mTAs.toArray(new QueueTA[mTAs.size()]);
 	}
+
+	public boolean containsStudent(String username, String location) {
+		for (QueueStudent student : mStudents)
+			if (student.getUsername().equals(username) && student.getLocation().equals(location)) {
+				// Student found
+				if (student.isInQueue())
+					return true;
+
+				return false;
+			}
+		return false;
+	}
 }

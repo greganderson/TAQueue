@@ -1,9 +1,12 @@
 package com.familybiz.greg.taqueue.view.queue;
 
+import android.app.ActionBar;
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.familybiz.greg.taqueue.MainActivity;
+import com.familybiz.greg.taqueue.R;
+import com.familybiz.greg.taqueue.model.Student;
 
 /**
  * Created by Greg Anderson
@@ -30,18 +33,19 @@ public class StudentQueueFragment extends QueueFragment {
 
 	@Override
 	void updateTabs() {
-		/*
-		// Queue active
 
+		// Check if user is in queue
+
+		Student student = (Student)MainActivity.getUser();
 		ActionBar.Tab tab = MainActivity.mActionBar.getTabAt(0);
-		if (mQueue.isActive()) {
-			if (!tab.getText().equals(getString(R.string.activate_tab_label)))
-				tab.select();
+
+		if (mQueue.containsStudent(student.getUsername(), student.getLocation())) {
+			if (!tab.getText().equals(getString(R.string.exit_queue_button_text)))
+				tab.setText(getString(R.string.exit_queue_button_text));
 		}
 		else {
-			if (tab.getText().equals(getString(R.string.activate_tab_label)))
-				tab.select();
+			if (!tab.getText().equals(getString(R.string.enter_queue_button_text)))
+				tab.setText(getString(R.string.enter_queue_button_text));
 		}
-		*/
 	}
 }
