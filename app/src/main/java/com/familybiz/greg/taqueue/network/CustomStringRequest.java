@@ -13,10 +13,7 @@ import java.util.Map;
  */
 public class CustomStringRequest extends StringRequest {
 
-	public static final String USER_ERROR = "USER_ERROR";
-	public static final String SERVER_ERROR = "SERVER_ERROR";
-
-    private static final String PROTOCOL_CHARSET = "utf-8";
+    public static final String PROTOCOL_CHARSET = "utf-8";
     private Map<String, String> headers;
     private String payload;
 

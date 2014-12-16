@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.familybiz.greg.taqueue.model.Instructor;
 import com.familybiz.greg.taqueue.model.School;
@@ -31,6 +32,7 @@ import com.familybiz.greg.taqueue.view.queue.QueueFragment;
 import com.familybiz.greg.taqueue.view.queue.StudentQueueFragment;
 import com.familybiz.greg.taqueue.view.queue.TAQueueFragment;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,7 +43,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
+
+// TODO: Make it so the user can refresh the schools list
 
 /**
  * Created by Greg Anderson
@@ -52,7 +58,8 @@ public class MainActivity extends Activity implements
 		QueueListFragment.OnQueueSelectedListener,
 		StudentLoginFragment.OnStudentLoginSuccessListener,
 		TALoginFragment.OnTALoginSuccessListener,
-		QueueFragment.OnSignOutListener {
+		QueueFragment.OnSignOutListener,
+		NetworkRequest.OnErrorCodeReceivedListener {
 
 	// Global access to the networking class, TODO: Which might be a bad idea
 	public static NetworkRequest NETWORK_REQUEST;
@@ -99,6 +106,7 @@ public class MainActivity extends Activity implements
 		mOnQueueScreen = false;
 
 		NETWORK_REQUEST = new NetworkRequest(this);
+		NETWORK_REQUEST.setOnErrorCodeReceivedListeners(this);
 
 		setContentView(R.layout.activity_main);
 
@@ -145,7 +153,6 @@ public class MainActivity extends Activity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		return true;
 	}
 
@@ -256,7 +263,7 @@ public class MainActivity extends Activity implements
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_layout, mStudentLoginFragment);
-		transaction.addToBackStack(null);
+		//transaction.addToBackStack(null);
 		transaction.commit();
 
 		// Load the action bar
@@ -328,7 +335,7 @@ public class MainActivity extends Activity implements
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_layout, mStudentQueueFragment);
-		transaction.addToBackStack(null);
+		//transaction.addToBackStack(null);
 		transaction.commit();
 
 	}
@@ -359,7 +366,7 @@ public class MainActivity extends Activity implements
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_layout, mTAQueueFragment);
-		transaction.addToBackStack(null);
+		//transaction.addToBackStack(null);
 		transaction.commit();
 	}
 
@@ -381,7 +388,29 @@ public class MainActivity extends Activity implements
 	public void onSignOut() {
 		mUser = null;
 		mOnQueueScreen = false;
+		//onBackPressed();
 		onQueueSelected(mSelectedQueue);
+	}
+
+	@Override
+	public void onErrorCodeReceived(int code, JSONArray errors) {
+		// Using a set because sometimes the server sends duplicate error messages
+		Set<String> messages = new HashSet<String>();
+
+		try {
+			for (int i = 0; i < errors.length(); i++)
+				messages.add(errors.getString(i));
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		for (String message : messages)
+			Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
+		// Clear the loading circle if it was going
+		ProgressBar loadingCircle = (ProgressBar)findViewById(R.id.loading_circle);
+		loadingCircle.setVisibility(View.GONE);
 	}
 
 	private void saveToFile() {

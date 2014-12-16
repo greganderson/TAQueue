@@ -29,7 +29,10 @@ import java.util.TimerTask;
  *
  * Created by Greg Anderson
  */
-public abstract class QueueFragment extends Fragment implements QueueRequest.OnQueueInformationReceivedListener, ListView.OnItemClickListener, NetworkRequest.OnDeleteRequestSuccessListener {
+public abstract class QueueFragment extends Fragment implements
+		QueueRequest.OnQueueInformationReceivedListener,
+		ListView.OnItemClickListener,
+		NetworkRequest.OnDeleteRequestSuccessListener {
 
 	private static List<StudentNameLocationTA> mStudentsBeingHelped;
 

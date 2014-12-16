@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -206,6 +207,21 @@ public class NetworkRequest {
 	}
 
 	private void parseError(NetworkResponse response) {
+		String message = "";
+		JSONArray errors = null;
+		try {
+			message = new String(response.data, CustomStringRequest.PROTOCOL_CHARSET);
+			JSONObject jsonMessage = new JSONObject(message);
+			errors = jsonMessage.getJSONArray("errors");
+		}
+		catch (UnsupportedEncodingException e) {
+			Log.e("Parse Data", "Error parsing byte array from response.");
+			e.printStackTrace();
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+
 		if (response.statusCode == 401) {
 			// (Unauthorized) meaning you probably did not send the right user_id/token (or none at all)
 		}
@@ -224,6 +240,9 @@ public class NetworkRequest {
 			// Something else, need to figure out what this status code means.
 			Log.e("REQUEST", "Unknown status code: " + response.statusCode);
 		}
+
+		if (mOnErrorCodeReceivedListeners != null)
+			mOnErrorCodeReceivedListeners.onErrorCodeReceived(response.statusCode, errors);
 	}
 
 
@@ -272,5 +291,19 @@ public class NetworkRequest {
 
 	public void setOnDeleteRequestSuccessListener(OnDeleteRequestSuccessListener onDeleteRequestSuccessListener) {
 		mOnDeleteRequestSuccessListener = onDeleteRequestSuccessListener;
+	}
+
+
+	/***************************** ERROR LISTENERS *****************************/
+
+
+	public interface OnErrorCodeReceivedListener {
+		public void onErrorCodeReceived(int code, JSONArray errors);
+	}
+
+	private OnErrorCodeReceivedListener mOnErrorCodeReceivedListeners;
+
+	public void setOnErrorCodeReceivedListeners(OnErrorCodeReceivedListener onErrorCodeReceivedListeners) {
+		mOnErrorCodeReceivedListeners = onErrorCodeReceivedListeners;
 	}
 }
