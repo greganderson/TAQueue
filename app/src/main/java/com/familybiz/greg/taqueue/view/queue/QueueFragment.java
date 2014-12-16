@@ -155,6 +155,10 @@ public abstract class QueueFragment extends Fragment implements
 
 	@Override
 	public void onQueueInformationReceived(QueueData queue) {
+		// Check to make sure the fragment has been added to the activity
+		if (!isAdded())
+			return;
+
 		mQueue = queue;
 		populateQueue(queue);
 		checkQueueSettings();

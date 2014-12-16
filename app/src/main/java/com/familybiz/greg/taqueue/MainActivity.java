@@ -83,6 +83,8 @@ public class MainActivity extends Activity implements
 	private TAQueueFragment mTAQueueFragment;
 	private boolean mOnQueueScreen; // Used for overriding the back button
 
+	private boolean mLoginFragmentAdded;
+
 	// ActionBar
 	private ActionBar mActionBar;
 	private boolean mInitialSelect;
@@ -104,6 +106,7 @@ public class MainActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 
 		mOnQueueScreen = false;
+		mLoginFragmentAdded = false;
 
 		NETWORK_REQUEST = new NetworkRequest(this);
 		NETWORK_REQUEST.setOnErrorCodeReceivedListeners(this);
@@ -263,8 +266,11 @@ public class MainActivity extends Activity implements
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_layout, mStudentLoginFragment);
-		//transaction.addToBackStack(null);
+		if (!mLoginFragmentAdded)
+			transaction.addToBackStack(null);
 		transaction.commit();
+
+		mLoginFragmentAdded = true;
 
 		// Load the action bar
 
@@ -288,6 +294,10 @@ public class MainActivity extends Activity implements
 		// Check to see if the user was on the queue screen, ignoring it if they are
 		if (mOnQueueScreen)
 			return;
+
+		// TODO: This is probably a bad idea (which means it really is), but I think it might fix
+		// TODO: the bug of the fragments not being added to the back stack correctly.
+		mLoginFragmentAdded = false;
 
 		clearActionBarAndLoadingCircle();
 
@@ -335,7 +345,7 @@ public class MainActivity extends Activity implements
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_layout, mStudentQueueFragment);
-		//transaction.addToBackStack(null);
+		transaction.addToBackStack(null);
 		transaction.commit();
 
 	}
@@ -366,7 +376,7 @@ public class MainActivity extends Activity implements
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_layout, mTAQueueFragment);
-		//transaction.addToBackStack(null);
+		transaction.addToBackStack(null);
 		transaction.commit();
 	}
 
@@ -389,6 +399,7 @@ public class MainActivity extends Activity implements
 		mUser = null;
 		mOnQueueScreen = false;
 		//onBackPressed();
+		getFragmentManager().popBackStack();
 		onQueueSelected(mSelectedQueue);
 	}
 
