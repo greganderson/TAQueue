@@ -27,4 +27,21 @@ public class StudentQueueFragment extends QueueFragment {
 	public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 		// Do nothing
 	}
+
+	@Override
+	void updateTabs() {
+		/*
+		// Queue active
+
+		ActionBar.Tab tab = MainActivity.mActionBar.getTabAt(0);
+		if (mQueue.isActive()) {
+			if (!tab.getText().equals(getString(R.string.activate_tab_label)))
+				tab.select();
+		}
+		else {
+			if (tab.getText().equals(getString(R.string.activate_tab_label)))
+				tab.select();
+		}
+		*/
+	}
 }

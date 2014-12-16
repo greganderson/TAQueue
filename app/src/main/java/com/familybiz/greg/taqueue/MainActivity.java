@@ -90,7 +90,7 @@ public class MainActivity extends Activity implements
 	private boolean mLoginFragmentAdded;
 
 	// ActionBar
-	private ActionBar mActionBar;
+	public static ActionBar mActionBar;
 	private boolean mInitialSelect;
 
 	// Currently selected options
@@ -384,9 +384,9 @@ public class MainActivity extends Activity implements
 		freezeQueue.setTabListener(new QueueTAActionTabListener());
 		signOut.setTabListener(new QueueTAActionTabListener());
 
-		mActionBar.addTab(deactivateQueue);
-		mActionBar.addTab(freezeQueue);
-		mActionBar.addTab(signOut);
+		mActionBar.addTab(deactivateQueue, 0);
+		mActionBar.addTab(freezeQueue, 1);
+		mActionBar.addTab(signOut, 2);
 		invalidateOptionsMenu();
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();

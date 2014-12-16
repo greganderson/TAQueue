@@ -1,5 +1,6 @@
 package com.familybiz.greg.taqueue.view.queue;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.View;
@@ -196,5 +197,33 @@ public class TAQueueFragment extends QueueFragment {
 		}
 
 		builder.show();
+	}
+
+	@Override
+	void updateTabs() {
+
+		// Queue active
+
+		ActionBar.Tab tab = MainActivity.mActionBar.getTabAt(0);
+		if (mQueue.isActive()) {
+			if (!tab.getText().equals(getString(R.string.activate_tab_label)))
+				tab.setText(getString(R.string.activate_tab_label));
+		}
+		else {
+			if (tab.getText().equals(getString(R.string.activate_tab_label)))
+				tab.setText(getString(R.string.deactivate_tab_label));
+		}
+
+		// Queue frozen
+
+		tab = MainActivity.mActionBar.getTabAt(1);
+		if (mQueue.isFrozen()) {
+			if (!tab.getText().equals(getString(R.string.queue_frozen_label)))
+				tab.setText(getString(R.string.unfreeze_tab_label));
+		}
+		else {
+			if (tab.getText().equals(getString(R.string.queue_frozen_label)))
+				tab.setText(getString(R.string.freeze_tab_label));
+		}
 	}
 }

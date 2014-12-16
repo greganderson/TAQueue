@@ -67,6 +67,7 @@ public abstract class QueueFragment extends Fragment implements
 	protected QueueRequest mQueueRequest;
 	protected Timer mTimer;
 	protected boolean mReadyToRefresh;
+	private boolean mInitialQueueRefresh;
 
 	// Data
 	protected QueueData mQueue;
@@ -77,6 +78,7 @@ public abstract class QueueFragment extends Fragment implements
 		mInflater = inflater;
 		mTimer = new Timer();
 		mReadyToRefresh = true;
+		mInitialQueueRefresh = true;
 
 		mStudentsBeingHelped = new ArrayList<StudentNameLocationTA>();
 
@@ -149,6 +151,7 @@ public abstract class QueueFragment extends Fragment implements
 	public void onStop() {
 		mTimer.cancel();
 		mReadyToRefresh = false;
+		mInitialQueueRefresh = true;
 		MainActivity.NETWORK_REQUEST.setOnDeleteRequestSuccessListener(null);
 		super.onStop();
 	}
@@ -162,9 +165,19 @@ public abstract class QueueFragment extends Fragment implements
 		mQueue = queue;
 		populateQueue(queue);
 		checkQueueSettings();
+
+		if (mInitialQueueRefresh) {
+			updateTabs();
+			mInitialQueueRefresh = false;
+		}
+
 		if (!mReadyToRefresh)
 			return;
 		mTimer.schedule(new RefreshQueue(), 1000);
+	}
+
+	public QueueData getQueue() {
+		return mQueue;
 	}
 
 	protected void checkQueueSettings() {
@@ -300,6 +313,8 @@ public abstract class QueueFragment extends Fragment implements
 
 	@Override
 	abstract public void onItemClick(AdapterView<?> adapterView, View view, int i, long l);
+
+	abstract void updateTabs();
 
 
 	/***************************** LISTENERS *****************************/
