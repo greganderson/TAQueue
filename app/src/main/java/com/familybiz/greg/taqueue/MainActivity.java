@@ -59,7 +59,8 @@ public class MainActivity extends Activity implements
 		StudentLoginFragment.OnStudentLoginSuccessListener,
 		TALoginFragment.OnTALoginSuccessListener,
 		QueueFragment.OnSignOutListener,
-		NetworkRequest.OnErrorCodeReceivedListener {
+		NetworkRequest.OnErrorCodeReceivedListener,
+		SchoolListFragment.OnSchoolsLoadedListener {
 
 	// Global access to the networking class, TODO: Which might be a bad idea
 	public static NetworkRequest NETWORK_REQUEST;
@@ -72,6 +73,9 @@ public class MainActivity extends Activity implements
 	private String ID = "id";
 	private String TOKEN = "token";
 	private String LOCATION = "location";
+	private String SELECTED_SCHOOL = "selected_school";
+	private String SELECTED_INSTRUCTOR = "selected_instructor";
+	private String SELECTED_QUEUE = "selected_queue";
 
 	// Fragments
 	private SchoolListFragment mSchoolListFragment;
@@ -117,6 +121,7 @@ public class MainActivity extends Activity implements
 
 		mSchoolListFragment = new SchoolListFragment();
 		mSchoolListFragment.setOnSchoolSelectedListener(this);
+		mSchoolListFragment.setOnSchoolsLoadedListener(this);
 
 		// Instructors
 
@@ -153,6 +158,11 @@ public class MainActivity extends Activity implements
 		addTransaction.commit();
 	}
 
+	@Override
+	protected void onPause() {
+		saveToFile();
+		super.onPause();
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -295,8 +305,8 @@ public class MainActivity extends Activity implements
 		if (mOnQueueScreen)
 			return;
 
-		// TODO: This is probably a bad idea (which means it really is), but I think it might fix
-		// TODO: the bug of the fragments not being added to the back stack correctly.
+		// TODO: This is probably a bad idea (which means it really is), but it fixes the bug of the
+		// TODO: fragments not being added to the back stack correctly.
 		mLoginFragmentAdded = false;
 
 		clearActionBarAndLoadingCircle();
@@ -320,6 +330,11 @@ public class MainActivity extends Activity implements
 
 	public static StudentQueue getSelectedQueue() {
 		return mSelectedQueue;
+	}
+
+	@Override
+	public void onSchoolsLoaded() {
+		readFromFile();
 	}
 
 	@Override
@@ -428,15 +443,22 @@ public class MainActivity extends Activity implements
 		try {
 			JSONObject data = new JSONObject();
 
-			if (mUser == null)
-				return;
+			if (mSelectedSchool != null)
+				data.put(SELECTED_SCHOOL, mSelectedSchool.getName());
+			if (mSelectedInstructor != null)
+				data.put(SELECTED_INSTRUCTOR, mSelectedInstructor.getName());
+			if  (mSelectedQueue != null)
+				data.put(SELECTED_QUEUE, mSelectedQueue.getClassNumber());
 
-			data.put(USER_TYPE, mUser.getUserType());
-			data.put(ID, mUser.getId());
-			data.put(TOKEN, mUser.getToken());
+			if (mUser != null) {
+				data.put(USER_TYPE, mUser.getUserType());
+				data.put(USERNAME, mUser.getUsername());
+				data.put(ID, mUser.getId());
+				data.put(TOKEN, mUser.getToken());
 
-			if (mUser.getUserType().equals(User.STUDENT))
-				data.put(LOCATION, ((Student)mUser).getLocation());
+				if (mUser.getUserType().equals(User.STUDENT))
+					data.put(LOCATION, ((Student)mUser).getLocation());
+			}
 
 			File file = new File(getFilesDir().getPath() + SAVED_DATA_FILE_NAME);
 			FileWriter fileWriter = new FileWriter(file);
@@ -461,18 +483,44 @@ public class MainActivity extends Activity implements
 			bufferedReader.close();
 
 			JSONObject dataJson = new JSONObject(data);
-			String user_type = dataJson.getString(USER_TYPE);
-			String username = dataJson.getString(USERNAME);
-			String id = dataJson.getString(ID);
-			String token = dataJson.getString(TOKEN);
 
-			if (user_type.equals(User.TA)) {
-				mUser = new TA(username, id, token);
+			if (dataJson.has(SELECTED_SCHOOL)) {
+				String selectedSchoolName = dataJson.getString(SELECTED_SCHOOL);
+				Object school = mSchoolListFragment.getSelectedItem(selectedSchoolName);
+				mSchoolListFragment.itemSelectedListener(school);
 			}
-			else {
-				String location = dataJson.getString(LOCATION);
-				mUser = new Student(username, id, token, location);
+			if (dataJson.has(SELECTED_INSTRUCTOR)) {
+				String selectedInstructorName = dataJson.getString(SELECTED_INSTRUCTOR);
+				Object instructor = mInstructorListFragment.getSelectedItem(selectedInstructorName);
+				mInstructorListFragment.itemSelectedListener(instructor);
 			}
+			if (dataJson.has(SELECTED_QUEUE)) {
+				String selectedQueueClassNumber = dataJson.getString(SELECTED_QUEUE);
+				Object queue = mQueueListFragment.getQueue(selectedQueueClassNumber);
+				mQueueListFragment.itemSelectedListener(queue);
+			}
+
+			if (dataJson.has(USER_TYPE)) {
+				String user_type = dataJson.getString(USER_TYPE);
+
+				String username = dataJson.getString(USERNAME);
+				String id = dataJson.getString(ID);
+				String token = dataJson.getString(TOKEN);
+
+				if (user_type.equals(User.TA)) {
+					mUser = new TA(username, id, token);
+					onTALoginSuccess((TA)mUser);
+				}
+				else {
+					String location = dataJson.getString(LOCATION);
+					mUser = new Student(username, id, token, location);
+					onStudentLoginSuccess((Student)mUser);
+				}
+			}
+
+			// Clear out file so it doesn't get loaded again unless it gets saved again
+			if (!file.delete())
+				Toast.makeText(this, "Saved file not deleted", Toast.LENGTH_SHORT).show();
 		}
 		catch (FileNotFoundException e) {
 			Log.i("LOAD", "Error loading saved file, maybe there was nothing saved.");

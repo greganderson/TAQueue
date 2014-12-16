@@ -37,11 +37,15 @@ public class QueueListFragment extends ListFragment {
 	 * Find the queue with the given name.  Returns null if it doesn't exist.
 	 */
 	@Override
-	Object getSelectedItem(String name) {
+	public Object getSelectedItem(String name) {
 		// TODO: Figure out a better way to do this, it just seems a little fragile.
 		// Extract the class number
 		String classNumber = name.substring(0, name.indexOf('-') - 1);
 
+		return getQueue(classNumber);
+	}
+
+	public Object getQueue(String classNumber) {
 		for (StudentQueue queue : MainActivity.getSelectedInstructor().getQueues())
 			if (queue.getClassNumber().equals(classNumber))
 				return queue;
@@ -49,7 +53,7 @@ public class QueueListFragment extends ListFragment {
 	}
 
 	@Override
-	void itemSelectedListener(Object queue) {
+	public void itemSelectedListener(Object queue) {
 		if (mOnQueueSelectedListener != null)
 			mOnQueueSelectedListener.onQueueSelected((StudentQueue)queue);
 	}

@@ -14,7 +14,7 @@ import com.familybiz.greg.taqueue.network.SchoolRequest;
  *
  * Created by Greg Anderson
  */
-public class SchoolListFragment extends ListFragment {
+public class SchoolListFragment extends ListFragment implements SchoolRequest.OnSchoolsReceivedListener {
 
 	// Makes a network call to populate the data
 	private SchoolRequest mSchoolRequest;
@@ -23,20 +23,7 @@ public class SchoolListFragment extends ListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSchoolRequest = new SchoolRequest();
 
-		mSchoolRequest.setOnSchoolsReceivedListener(new SchoolRequest.OnSchoolsReceivedListener() {
-			@Override
-			public void onSchoolsReceived(School[] schools) {
-				mSchools = schools;
-
-				// Update the list of schools
-				mArrayAdapter.clear();
-				String[] names = new String[schools.length];
-				for (int i = 0; i < names.length; i++)
-					names[i] = schools[i].toString();
-
-				mArrayAdapter.addAll(names);
-			}
-		});
+		mSchoolRequest.setOnSchoolsReceivedListener(this);
 
 		// Populate the list and array of schools
 		mSchoolRequest.populateSchoolData();
@@ -54,11 +41,27 @@ public class SchoolListFragment extends ListFragment {
 		super.onStop();
 	}
 
+	@Override
+	public void onSchoolsReceived(School[] schools) {
+		mSchools = schools;
+
+		// Update the list of schools
+		mArrayAdapter.clear();
+		String[] names = new String[schools.length];
+		for (int i = 0; i < names.length; i++)
+			names[i] = schools[i].toString();
+
+		mArrayAdapter.addAll(names);
+
+		if (mOnSchoolsLoadedListener != null)
+			mOnSchoolsLoadedListener.onSchoolsLoaded();
+	}
+
 	/**
 	 * Finds the school with the given name.  Returns null if it doesn't exist.
 	 */
 	@Override
-	Object getSelectedItem(String name) {
+	public Object getSelectedItem(String name) {
 		for (School school : mSchools)
 			if (school.getName().equals(name))
 				return school;
@@ -66,13 +69,26 @@ public class SchoolListFragment extends ListFragment {
 	}
 
 	@Override
-	void itemSelectedListener(Object school) {
+	public void itemSelectedListener(Object school) {
 		if (mOnSchoolSelectedListener != null)
 			mOnSchoolSelectedListener.onSchoolSelected((School)school);
 	}
 
 
 	/***************************** LISTENERS *****************************/
+
+
+	// Done loading data
+
+	public interface OnSchoolsLoadedListener {
+		public void onSchoolsLoaded();
+	}
+
+	private OnSchoolsLoadedListener mOnSchoolsLoadedListener;
+
+	public void setOnSchoolsLoadedListener(OnSchoolsLoadedListener onSchoolsLoadedListener) {
+		mOnSchoolsLoadedListener = onSchoolsLoadedListener;
+	}
 
 
 	// School selected

@@ -38,4 +38,9 @@ public class Instructor {
 	public StudentQueue[] getQueues() {
 		return mQueue.toArray(new StudentQueue[mQueue.size()]);
 	}
+
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

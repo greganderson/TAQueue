@@ -38,7 +38,7 @@ public class InstructorListFragment extends ListFragment {
 	 * Find the instructor with the given name.  Returns null if it doesn't exist.
 	 */
 	@Override
-	Object getSelectedItem(String name) {
+	public Object getSelectedItem(String name) {
 		for (Instructor instructor : MainActivity.getSelectedSchool().getInstructors())
 			if (instructor.getName().equals(name))
 				return instructor;
@@ -46,7 +46,7 @@ public class InstructorListFragment extends ListFragment {
 	}
 
 	@Override
-	void itemSelectedListener(Object instructor) {
+	public void itemSelectedListener(Object instructor) {
 		if (mOnInstructorSelectedListener != null)
 			mOnInstructorSelectedListener.onInstructorSelected((Instructor)instructor);
 	}
