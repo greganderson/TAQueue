@@ -4,13 +4,11 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -51,14 +49,12 @@ public class NetworkRequest {
 	public void executeGetRequest(String url, final String id, String token) {
 		// TODO: Make the change to using Uri.Builder
 
-		// Make it so the authorization variables can be accessed from the inner class
-		final boolean authorize = !id.isEmpty();
-		final String username = id;
-		final String password = token;
+		Map<String, String> headers = new HashMap<String, String>();
+		encodeHeader(headers, id, token);
 
-		StringRequest stringRequest = new StringRequest(
-				Request.Method.GET,
+		CustomStringRequest getRequest = CustomStringRequest.get(
 				BASE_URL + url,
+				headers,
 				new Response.Listener<String>() {
 					@Override
 					public void onResponse(String response) {
@@ -68,84 +64,94 @@ public class NetworkRequest {
 				new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						Log.e("Get request error", "Something was wrong with the request.");
+						parseError(error.networkResponse);
 					}
-				}){
+				});
 
-			// Set the correct header to prevent getting html back
-			@Override
-			public Map<String, String> getHeaders() throws AuthFailureError {
-				Map<String, String> headers = new HashMap<String, String>();
-				headers.put("Accept", "application/json");
+		getRequest.setRetryPolicy(new DefaultRetryPolicy(2000, 1, 1.0f));
 
-				// Encode the username and password if provided
-				if (authorize)
-					encodeHeader(headers, username, password);
-
-				return headers;
-			}
-		};
-
-		mQueue.add(stringRequest);
+		mQueue.add(getRequest);
 	}
 
 	public void executePostRequest(String url, JSONObject params) {
 		executePostRequest(url, params, "", "");
 	}
 
+	/**
+	 * Wrapper for the POST request.
+	 */
 	public void executePostRequest(String url, JSONObject params, String id, String token) {
 		// TODO: Make the change to using Uri.Builder
 
-		// Make it so the authorization variables can be accessed from the inner class
-		final boolean authorize = !id.isEmpty();
-		final String username = id;
-		final String password = token;
+		Map<String, String> headers = new HashMap<String, String>();
+		encodeHeader(headers, id, token);
 
-		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+		CustomStringRequest postRequest = CustomStringRequest.post(
 				BASE_URL + url,
-				params,
-				new Response.Listener<JSONObject>() {
+				headers,
+				params.toString(),
+				new Response.Listener<String>() {
 					@Override
-					public void onResponse(JSONObject response) {
-						parseResponse(response.toString());
+					public void onResponse(String response) {
+						parseResponse(response);
 					}
 				},
 				new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						Log.e("Post request error", "Something went wrong.");
+						parseError(error.networkResponse);
 					}
-				}){
+				});
+		postRequest.setRetryPolicy(new DefaultRetryPolicy(2000, 1, 1.0f));
 
-			// Set the correct header to prevent getting html back
-			@Override
-			public Map<String, String> getHeaders() throws AuthFailureError {
-				Map<String, String> headers = new HashMap<String, String>();
-				headers.put("Content-Type", "application/json");
-				headers.put("Accept", "application/json");
-
-				// Encode the username and password if provided
-				if (authorize)
-					encodeHeader(headers, username, password);
-
-				return headers;
-			}
-		};
-
-		mQueue.add(jsonObjectRequest);
+		mQueue.add(postRequest);
 	}
 
-	public void executeDeleteRequest(String url, String id, String token) {
-		final String username = id;
-		final String password = token;
+	/**
+	 * Wrapper for the PUT request.
+	 */
+	public void executePutRequest(String url, JSONObject params, String id, String token) {
+		// TODO: Make the change to using Uri.Builder
 
-		StringRequest stringRequest = new StringRequest(
-				Request.Method.DELETE,
+		Map<String, String> headers = new HashMap<String, String>();
+		encodeHeader(headers, id, token);
+
+		CustomStringRequest putRequest = CustomStringRequest.put(
 				BASE_URL + url,
+				headers,
+				params.toString(),
 				new Response.Listener<String>() {
 					@Override
 					public void onResponse(String response) {
-						// TODO: Check for response code to make sure it worked
+						parseResponse(response);
+					}
+				},
+				new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						parseError(error.networkResponse);
+					}
+				});
+		putRequest.setRetryPolicy(new DefaultRetryPolicy(2000, 1, 1.0f));
+
+		mQueue.add(putRequest);
+	}
+
+	/**
+	 * Wrapper for the DELETE request.
+	 */
+	public void executeDeleteRequest(String url, String id, String token) {
+		// TODO: Make the change to using Uri.Builder
+
+		Map<String, String> headers = new HashMap<String, String>();
+		encodeHeader(headers, id, token);
+
+		CustomStringRequest deleteRequest = CustomStringRequest.delete(
+				BASE_URL + url,
+				headers,
+				new Response.Listener<String>() {
+					@Override
+					public void onResponse(String response) {
 						if (mOnDeleteRequestSuccessListener != null)
 							mOnDeleteRequestSuccessListener.onDeleteRequestSuccess();
 					}
@@ -153,75 +159,23 @@ public class NetworkRequest {
 				new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						Log.e("Delete request error", "Something was wrong with the request.");
+						parseError(error.networkResponse);
 					}
-				}){
+				});
+		deleteRequest.setRetryPolicy(new DefaultRetryPolicy(2000, 1, 1.0f));
 
-			// Set the correct header to prevent getting html back
-			@Override
-			public Map<String, String> getHeaders() throws AuthFailureError {
-				Map<String, String> headers = new HashMap<String, String>();
-				headers.put("Accept", "application/json");
-
-				// Encode the username and password
-				encodeHeader(headers, username, password);
-				return headers;
-			}
-		};
-
-		mQueue.add(stringRequest);
-	}
-
-	public void executePutRequest(String url, JSONObject jsonParams, String id, String token) {
-		// TODO: Make the change to using Uri.Builder
-
-		// Make it so the authorization variables can be accessed from the inner class
-		final boolean authorize = !id.isEmpty();
-		final String username = id;
-		final String password = token;
-		final JSONObject params = jsonParams;
-
-		ExtendedJsonObjectRequest jsonObjectRequest = new ExtendedJsonObjectRequest(
-				Request.Method.PUT,
-				BASE_URL + url,
-				params,
-				new Response.Listener<JSONObject>() {
-					@Override
-					public void onResponse(JSONObject response) {
-						parseResponse(response.toString());
-					}
-				},
-				new Response.ErrorListener() {
-					@Override
-					public void onErrorResponse(VolleyError error) {
-						// TODO: Figure out a better way to do something, anything here.  The request
-						// TODO: needs to change to something else.
-					}
-				}){
-
-			// Set the correct header to prevent getting html back
-			@Override
-			public Map<String, String> getHeaders() throws AuthFailureError {
-				Map<String, String> headers = new HashMap<String, String>();
-				headers.put("Content-Type", "application/json");
-				headers.put("Accept", "application/json");
-
-				// Encode the username and password if provided
-				if (authorize)
-					encodeHeader(headers, username, password);
-
-				return headers;
-			}
-		};
-
-		mQueue.add(jsonObjectRequest);
+		mQueue.add(deleteRequest);
 	}
 
 	private void encodeHeader(Map<String, String> headers, String username, String password) {
-		String code = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
-		code = code.replaceAll("\n", "");
-		code = "Basic " + code;
-		headers.put("Authorization", code);
+		headers.put("Accept", "application/json");
+
+		if (!username.isEmpty()) {
+			String code = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
+			code = code.replaceAll("\n", "");
+			code = "Basic " + code;
+			headers.put("Authorization", code);
+		}
 	}
 
 
@@ -251,10 +205,24 @@ public class NetworkRequest {
 		}
 	}
 
-	private class ExtendedJsonObjectRequest extends JsonObjectRequest {
-
-		public ExtendedJsonObjectRequest(int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-			super(Method.PUT, url, jsonRequest, listener, errorListener);
+	private void parseError(NetworkResponse response) {
+		if (response.statusCode == 401) {
+			// (Unauthorized) meaning you probably did not send the right user_id/token (or none at all)
+		}
+		else if (response.statusCode == 422) {
+			// (Unprocessable Entity) meaning you sent invalid data associated with the resource,
+			// like forgetting a username when logging in.
+		}
+		else if (response.statusCode == 403) {
+			// (Forbidden) You sent correct user_id/token but attempted to do something you can't
+			// (like enter the queue when it's deactivated)
+		}
+		else if (response.statusCode == 500) {
+			// (Server Error) meaning the server balked. Please report this if it happens
+		}
+		else {
+			// Something else, need to figure out what this status code means.
+			Log.e("REQUEST", "Unknown status code: " + response.statusCode);
 		}
 	}
 
