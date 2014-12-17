@@ -23,7 +23,7 @@
             android:name="com.familybiz.greg.taqueue.MoreInformationActivity"
             android:label="@string/title_activity_more_information"
             android:parentActivityName="com.familybiz.greg.taqueue.MainActivity"
-            android:theme="@style/CustomDarkActionBarTheme"
+            android:theme="@style/CustomLightTheme"
             android:screenOrientation="portrait" >
         </activity>
     </application>
