@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
@@ -90,6 +91,7 @@ public class MainActivity extends Activity implements
 	private boolean mLoginFragmentAdded;
 
 	// ActionBar
+	private int mMoreInformationMenuItem = Menu.FIRST;
 	public static ActionBar mActionBar;
 	private boolean mInitialSelect;
 
@@ -173,8 +175,13 @@ public class MainActivity extends Activity implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		String title = item.getTitle().toString();
 
+		if (title.equals(getString(R.string.more_information_options_menu_label))) {
+			Intent intent = new Intent(this, MoreInformationActivity.class);
+			startActivity(intent);
+		}
+
 		// Only available if user is a TA
-		if (title.equals(getString(R.string.queue_status_options_menu_label))) {
+		else if (title.equals(getString(R.string.queue_status_options_menu_label))) {
 			final EditText statusView = new EditText(this);
 
 			// Set the maximum number of characters allowed
@@ -236,6 +243,7 @@ public class MainActivity extends Activity implements
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
+		menu.add(0, mMoreInformationMenuItem, 0, getString(R.string.more_information_options_menu_label));
 		if (mUser != null && mUser.getUserType().equals(User.TA)) {
 			menu.add(0, mTAOptionsMenuQueueStatus, 0, getString(R.string.queue_status_options_menu_label));
 			menu.add(0, mTAOptionsMenuIsQuestionBased, 0, getString(R.string.ta_options_menu_is_question_based_label));
