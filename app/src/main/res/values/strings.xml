@@ -3,22 +3,40 @@
 
     <string name="app_name">TA Queue</string>
     <string name="action_settings">Settings</string>
-    <string name="student">Student</string>
-    <string name="ta">TA</string>
+
+    <!-- Lists -->
+    <string name="school_list_label">Schools</string>
+    <string name="instructor_list_label">Instructors</string>
+    <string name="queue_list_label">Classes</string>
+
+    <!-- Both student and TA -->
     <string name="name_hint">Name</string>
+
+    <!-- Student -->
+    <string name="student">Student</string>
     <string name="location_hint">Location</string>
+
+    <!-- TA -->
+    <string name="ta">TA</string>
     <string name="password_hint">Password</string>
+
+    <!-- Login screen -->
     <string name="login_button">Login</string>
+
+    <!-- Queue -->
     <string name="ta_list_label">TA\'s</string>
     <string name="queue_label">Queue</string>
     <string name="queue_frozen_label">Queue (Frozen)</string>
     <string name="queue_deactivated_label">Queue (Deactivated)</string>
-    <string name="school_list_label">Schools</string>
-    <string name="instructor_list_label">Instructors</string>
-    <string name="queue_list_label">Classes</string>
-    <string name="enter_queue_button_text">Enter Queue</string>
     <string name="sign_out_button_text">Sign Out</string>
+    <string name="no_tas_on_duty">No TA\'s on duty.</string>
+    <string name="no_students_in_the_queue">No students in the queue.</string>
+
+    <!-- Student specific -->
+    <string name="enter_queue_button_text">Enter Queue</string>
     <string name="exit_queue_button_text">Exit Queue</string>
+
+    <!-- TA specific -->
     <string name="deactivate_tab_label">Deactivate</string>
     <string name="freeze_tab_label">Freeze</string>
     <string name="activate_tab_label">Activate</string>
@@ -27,8 +45,6 @@
     <string name="accept_student_action">Accept</string>
     <string name="remove_student_action">Remove</string>
     <string name="put_student_back_action">Put Back</string>
-    <string name="no_tas_on_duty">No TA\'s on duty.</string>
-    <string name="no_students_in_the_queue">No students in the queue.</string>
     <string name="queue_status_options_menu_label">Change queue status</string>
     <string name="change_queue_status_edittext_hint">Queue status...</string>
     <string name="change_queue_status_title">Status</string>
@@ -38,5 +54,13 @@
     <string name="is_queue_question_based_yes_label">Yes</string>
     <string name="is_queue_question_based_no_label">No</string>
     <string name="queue_is_question_based_dialog_title">Is queue question based</string>
+
+
+    <!-- More information activity -->
+    <string name="title_activity_more_information">MoreInformationActivity</string>
+    <string name="more_information_text">This app was built by Greg Anderson at the University
+    of Utah.  The TA Queue web service was built by Parker Wightman.  Both this app and the backend
+    web service it uses are open source.  Feel free to contribute or contact Greg or Parker for more
+    information.</string>
 
 </resources>
