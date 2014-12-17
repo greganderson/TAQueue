@@ -62,5 +62,11 @@
     of Utah.  The TA Queue web service was built by Parker Wightman.  Both this app and the backend
     web service it uses are open source.  Feel free to contribute or contact Greg or Parker for more
     information.</string>
+    <string name="more_information_options_menu_label">More info</string>
+    <string name="ta_queue_android_github_button">Go to TA Queue Android App on GitHub</string>
+    <string name="ta_queue_web_service_github_button">Go to TA Queue Web Service on GitHub</string>
+    <string name="email_greg_button">Email Greg</string>
+    <string name="email_parker_button">Email Parker</string>
+    <string name="start_web_client_button">Go to Web Client</string>
 
 </resources>

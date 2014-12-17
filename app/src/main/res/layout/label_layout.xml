@@ -3,7 +3,7 @@
           android:id="@+id/label_layout"
           android:layout_width="match_parent"
           android:layout_height="@dimen/label_height"
-          android:textSize="@dimen/label_font_size"
+          android:textSize="@dimen/general_label_font_size"
           android:gravity="center_vertical"
           android:paddingLeft="@dimen/list_item_left_padding"
           android:background="@color/label_color"/>

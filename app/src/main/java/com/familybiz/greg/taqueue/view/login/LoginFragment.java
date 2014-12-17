@@ -48,6 +48,7 @@ public abstract class LoginFragment extends Fragment {
 		// Login
 		Button loginButton = new Button(getActivity());
 		loginButton.setText(getString(R.string.login_button));
+		loginButton.setBackgroundResource(R.drawable.custom_button);
 
 		rootLayout.addView(mNameTextBox, new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,

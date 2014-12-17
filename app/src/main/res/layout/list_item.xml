@@ -2,8 +2,9 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
           android:id="@+id/basic_list_item"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/list_item_height"
-          android:textSize="@dimen/list_item_font_size"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/list_item_height"
+          android:textSize="@dimen/general_font_size"
           android:gravity="center_vertical"
           android:paddingLeft="@dimen/list_item_left_padding"
-          android:background="@color/background_color"/>
+          android:background="@drawable/list_item_selection" />
