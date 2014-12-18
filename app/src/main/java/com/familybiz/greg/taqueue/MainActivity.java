@@ -107,6 +107,8 @@ public class MainActivity extends Activity implements
 	private boolean mLastFragmentWasTAQueue;
 
 	// ActionBar
+	private int mSettingsMenuItem = Menu.FIRST;
+	private int mRefreshMenuItem = Menu.FIRST;
 	private int mMoreInformationMenuItem = Menu.FIRST;
 	public static ActionBar mActionBar;
 	private boolean mInitialSelect;
@@ -195,18 +197,32 @@ public class MainActivity extends Activity implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		String title = item.getTitle().toString();
 
+		// Settings
+		if (title.equals(getString(R.string.settings_label))) {
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+		}
+
+		// Only available if on the school list fragment
+		// Refresh
+		else if (title.equals(getString(R.string.refresh_label))) {
+			mSchoolListFragment.refreshData();
+		}
+
+		// More info
 		if (title.equals(getString(R.string.more_information_options_menu_label))) {
 			Intent intent = new Intent(this, MoreInformationActivity.class);
 			startActivity(intent);
 		}
 
 		// Only available if user is a TA
+		// Queue status
 		else if (title.equals(getString(R.string.queue_status_options_menu_label))) {
 			final EditText statusView = new EditText(this);
 
 			// Set the maximum number of characters allowed
 			// 51 characters fits the full line of the input box on the browser version (at least on
-			// my screen in chome)
+			// my screen in chrome)
 			int maxLength = 51;
 			statusView.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
 			statusView.setHint(getString(R.string.change_queue_status_edittext_hint));
@@ -216,13 +232,13 @@ public class MainActivity extends Activity implements
 					.setTitle(getString(R.string.change_queue_status_title))
 					.setCancelable(true)
 					.setView(statusView)
-					.setPositiveButton(getString(R.string.change_queue_status_ok_label), new DialogInterface.OnClickListener() {
+					.setPositiveButton(getString(R.string.save_label), new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialogInterface, int i) {
 							mTAQueueFragment.changeStatus(statusView.getText().toString());
 						}
 					})
-					.setNegativeButton(getString(R.string.change_queue_status_cancel_label), new DialogInterface.OnClickListener() {
+					.setNegativeButton(getString(R.string.cancel_label), new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialogInterface, int i) {
 							// Do nothing
@@ -234,6 +250,7 @@ public class MainActivity extends Activity implements
 
 		// TODO: Check why making the queue question based isn't working (on the server end)
 		// TODO: NOTE!  THIS MENU ITEM WILL NOT DO ANYTHING UNTIL THE SERVER IS FIXED!
+		// Question based
 		else if (title.equals(getString(R.string.ta_options_menu_is_question_based_label))) {
 			new AlertDialog.Builder(this)
 					.setTitle(getString(R.string.queue_is_question_based_dialog_title))
@@ -263,7 +280,16 @@ public class MainActivity extends Activity implements
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
+		menu.add(0, mSettingsMenuItem, 0, getString(R.string.settings_label));
+
+		// Make it so the user can refresh if something goes wrong on the school list fragment
+		SchoolListFragment schoolListFragment = (SchoolListFragment)getFragmentManager().findFragmentByTag(school_list_fragment_tag);
+		if (schoolListFragment != null && schoolListFragment.isVisible())
+			menu.add(0, mRefreshMenuItem, 0, getString(R.string.refresh_label));
+
 		menu.add(0, mMoreInformationMenuItem, 0, getString(R.string.more_information_options_menu_label));
+
+		// Add the TA actions
 		if (mUser != null && mUser.getUserType().equals(User.TA)) {
 			menu.add(0, mTAOptionsMenuQueueStatus, 0, getString(R.string.queue_status_options_menu_label));
 			menu.add(0, mTAOptionsMenuIsQuestionBased, 0, getString(R.string.ta_options_menu_is_question_based_label));

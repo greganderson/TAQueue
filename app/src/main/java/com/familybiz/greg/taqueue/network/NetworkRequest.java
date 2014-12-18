@@ -28,9 +28,9 @@ public class NetworkRequest {
 
 	// TODO: Consider changing all StringRequests to NetworkResponseRequest.
 
-	private int TIMEOUT_TIME = 2000;
+	private int TIMEOUT_TIME = 3000;
 
-	private String BASE_URL = "http://nine.eng.utah.edu";
+	public static String BASE_URL = "http://nine.eng.utah.edu";
 
 	private RequestQueue mQueue;
 

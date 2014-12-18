@@ -27,6 +27,12 @@
             android:theme="@style/CustomLightTheme"
             android:screenOrientation="portrait" >
         </activity>
+        <activity android:name="com.familybiz.greg.taqueue.SettingsActivity"
+                  android:label="@string/settings_label"
+                  android:parentActivityName="com.familybiz.greg.taqueue.MainActivity"
+                  android:theme="@style/CustomLightTheme"
+                  android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

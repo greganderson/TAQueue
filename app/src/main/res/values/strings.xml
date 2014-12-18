@@ -48,8 +48,8 @@
     <string name="queue_status_options_menu_label">Status</string>
     <string name="change_queue_status_edittext_hint">Queue status…</string>
     <string name="change_queue_status_title">Status</string>
-    <string name="change_queue_status_ok_label">Save</string>
-    <string name="change_queue_status_cancel_label">Cancel</string>
+    <string name="save_label">Save</string>
+    <string name="cancel_label">Cancel</string>
     <string name="ta_options_menu_is_question_based_label">Question Based</string>
     <string name="is_queue_question_based_yes_label">Yes</string>
     <string name="is_queue_question_based_no_label">No</string>
@@ -73,5 +73,9 @@
     <string name="network_timeout_toast">Could not connect to server.</string>
     <string name="reconnected_toast">Reconnected</string>
     <string name="retry_connection_button">Retry Connection</string>
+    <string name="settings_label">Settings</string>
+    <string name="base_url_settings_label">Change base URL</string>
+    <string name="base_url_popup_title">Base URL</string>
+    <string name="refresh_label">Refresh</string>
 
 </resources>

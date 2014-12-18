@@ -42,6 +42,10 @@ public class SchoolListFragment extends ListFragment implements SchoolRequest.On
 		super.onStop();
 	}
 
+	public void refreshData() {
+		mSchoolRequest.populateSchoolData();
+	}
+
 	@Override
 	public void onSchoolsReceived(School[] schools) {
 		mSchools = schools;
