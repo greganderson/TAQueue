@@ -61,7 +61,9 @@ public class MainActivity extends Activity implements
 		TALoginFragment.OnTALoginSuccessListener,
 		QueueFragment.OnSignOutListener,
 		NetworkRequest.OnErrorCodeReceivedListener,
-		SchoolListFragment.OnSchoolsLoadedListener {
+		SchoolListFragment.OnSchoolsLoadedListener,
+		NetworkRequest.OnNetworkTimeoutListener,
+		NetworkTestFragment.OnNetworkReconnectedListener {
 
 	// Global access to the networking class, TODO: Which might be a bad idea
 	public static NetworkRequest NETWORK_REQUEST;
@@ -87,6 +89,7 @@ public class MainActivity extends Activity implements
 	private StudentQueueFragment mStudentQueueFragment;
 	private TAQueueFragment mTAQueueFragment;
 	private boolean mOnQueueScreen; // Used for overriding the back button
+	private NetworkTestFragment mNetworkTestFragment;
 	// Fragment tags
 	private String school_list_fragment_tag = "SCHOOL_LIST";
 	private String instructor_list_fragment_tag = "INSTRUCTOR_LIST";
@@ -120,6 +123,10 @@ public class MainActivity extends Activity implements
 
 		NETWORK_REQUEST = new NetworkRequest(this);
 		NETWORK_REQUEST.setOnErrorCodeReceivedListeners(this);
+		NETWORK_REQUEST.setOnNetworkTimeoutListener(this);
+
+		mNetworkTestFragment = new NetworkTestFragment();
+		mNetworkTestFragment.setOnNetworkReconnectedListener(this);
 
 		setContentView(R.layout.activity_main);
 
@@ -165,9 +172,9 @@ public class MainActivity extends Activity implements
 	}
 
 	@Override
-	protected void onPause() {
+	protected void onStop() {
 		saveToFile();
-		super.onPause();
+		super.onStop();
 	}
 
 	@Override
@@ -253,6 +260,24 @@ public class MainActivity extends Activity implements
 			menu.add(0, mTAOptionsMenuIsQuestionBased, 0, getString(R.string.ta_options_menu_is_question_based_label));
 		}
 		return super.onPrepareOptionsMenu(menu);
+	}
+
+	@Override
+	public void onNetworkTimeout() {
+		Toast.makeText(this, getString(R.string.network_timeout_toast), Toast.LENGTH_SHORT).show();
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.fragment_layout, mNetworkTestFragment);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+	@Override
+	public void onNetworkReconnected() {
+		Toast.makeText(this, getString(R.string.reconnected_toast), Toast.LENGTH_SHORT).show();
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		/*
+		transaction.
+		*/
 	}
 
 	/**
@@ -514,6 +539,9 @@ public class MainActivity extends Activity implements
 			e.printStackTrace();
 		}
 		catch (JSONException e) {
+			e.printStackTrace();
+		}
+		catch (NullPointerException e) {
 			e.printStackTrace();
 		}
 	}

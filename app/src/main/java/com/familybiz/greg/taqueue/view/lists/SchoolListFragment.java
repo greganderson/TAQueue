@@ -21,6 +21,7 @@ public class SchoolListFragment extends ListFragment implements SchoolRequest.On
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
 		mSchoolRequest = new SchoolRequest();
 
 		mSchoolRequest.setOnSchoolsReceivedListener(this);

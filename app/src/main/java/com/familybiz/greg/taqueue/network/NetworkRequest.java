@@ -207,6 +207,14 @@ public class NetworkRequest {
 	}
 
 	private void parseError(NetworkResponse response) {
+
+		// Null if no internet connection
+		if (response == null) {
+			if (mOnNetworkTimeoutListener != null)
+				mOnNetworkTimeoutListener.onNetworkTimeout();
+			return;
+		}
+
 		String message = "";
 		JSONArray errors = null;
 		try {
@@ -297,6 +305,8 @@ public class NetworkRequest {
 	/***************************** ERROR LISTENERS *****************************/
 
 
+	// General error
+
 	public interface OnErrorCodeReceivedListener {
 		public void onErrorCodeReceived(int code, JSONArray errors);
 	}
@@ -305,5 +315,17 @@ public class NetworkRequest {
 
 	public void setOnErrorCodeReceivedListeners(OnErrorCodeReceivedListener onErrorCodeReceivedListeners) {
 		mOnErrorCodeReceivedListeners = onErrorCodeReceivedListeners;
+	}
+
+	// Network timeout
+
+	public interface OnNetworkTimeoutListener {
+		public void onNetworkTimeout();
+	}
+
+	private OnNetworkTimeoutListener mOnNetworkTimeoutListener;
+
+	public void setOnNetworkTimeoutListener(OnNetworkTimeoutListener onNetworkTimeoutListener) {
+		mOnNetworkTimeoutListener = onNetworkTimeoutListener;
 	}
 }
