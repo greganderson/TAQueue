@@ -77,5 +77,8 @@
     <string name="base_url_settings_label">Change base URL</string>
     <string name="base_url_popup_title">Base URL</string>
     <string name="refresh_label">Refresh</string>
+    <string name="android_github_url">https://github.com/greganderson/TAQueue</string>
+    <string name="web_service_github_url">https://github.com/urails/ta_queue</string>
+    <string name="web_client_url">http://nine.eng.utah.edu/</string>
 
 </resources>
