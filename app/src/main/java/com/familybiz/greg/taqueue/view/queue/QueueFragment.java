@@ -118,7 +118,7 @@ public abstract class QueueFragment extends Fragment implements
 		mTAListAdapter = new ColorableTAArrayAdapter(getActivity(), R.layout.list_item);
 		mTAList = new ListView(getActivity());
 		mTAList.setAdapter(mTAListAdapter);
-		mTAList.setBackgroundColor(getResources().getColor(R.color.background_color));
+		mTAList.setBackgroundColor(getResources().getColor(R.color.light_background_color));
 		rootLayout.addView(mTAList, new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -137,7 +137,7 @@ public abstract class QueueFragment extends Fragment implements
 		mStudentListAdapter = new ColorableStudentArrayAdapter(getActivity(), R.layout.list_item);
 		mStudentList = new ListView(getActivity());
 		mStudentList.setAdapter(mStudentListAdapter);
-		mStudentList.setBackgroundColor(getResources().getColor(R.color.background_color));
+		mStudentList.setBackgroundColor(getResources().getColor(R.color.light_background_color));
 		rootLayout.addView(mStudentList, new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -190,16 +190,19 @@ public abstract class QueueFragment extends Fragment implements
 			// Not active, disable entering queue and set background
 			mQueueLabelView.setBackgroundColor(getResources().getColor(R.color.queue_deactivated_background));
 			mQueueLabelView.setText(getString(R.string.queue_deactivated_label));
+			mQueueLabelView.setTextColor(getResources().getColor(R.color.light_background_text_color));
 		}
 		else if (mQueue.isFrozen()) {
 			// Frozen, disable entering queue and set background
 			mQueueLabelView.setBackgroundColor(getResources().getColor(R.color.queue_frozen_background));
 			mQueueLabelView.setText(getString(R.string.queue_frozen_label));
+			mQueueLabelView.setTextColor(getResources().getColor(R.color.light_background_text_color));
 		}
 		else {
 			// Must be good to go!
-			mQueueLabelView.setBackgroundColor(getResources().getColor(R.color.background_color));
+			mQueueLabelView.setBackgroundColor(getResources().getColor(R.color.dark_background_color));
 			mQueueLabelView.setText(getString(R.string.queue_label));
+			mQueueLabelView.setTextColor(getResources().getColor(R.color.dark_background_text_color));
 		}
 
 

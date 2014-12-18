@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="label_background_color">#333333</color>
-    <color name="label_text_color">#EEEEEE</color>
-    <color name="background_color">#EEEEEE</color>
+    <color name="dark_background_color">#333333</color>
+    <color name="dark_background_text_color">#EEEEEE</color>
+    <color name="light_background_color">#EEEEEE</color>
+    <color name="light_background_text_color">#000000</color>
     <color name="queue_deactivated_background">#FCBDA4</color>
     <color name="queue_frozen_background">#94F3FF</color>
 
@@ -12,7 +13,11 @@
     <color name="transparent">#00000000</color>
     <color name="tab_highlight">#444444</color>
     <color name="tab_underline">#2785A8</color>
-    <color name="testColor">#00ff00</color>
+
+    <!-- Button colors -->
+    <color name="button_background">#DBDDDC</color>
+    <color name="button_background_pressed">#EEEEEE</color>
+    <color name="button_outline">#BDC3C7</color>
 
     <!-- TA background colors -->
     <color name="yellowish">#FFD873</color>

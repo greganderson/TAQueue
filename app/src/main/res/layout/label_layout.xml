@@ -6,5 +6,5 @@
           android:textSize="@dimen/general_label_font_size"
           android:gravity="center_vertical"
           android:paddingLeft="@dimen/list_item_left_padding"
-          android:background="@color/label_background_color"
-          android:textColor="@color/label_text_color"/>
+          android:background="@color/dark_background_color"
+          android:textColor="@color/dark_background_text_color"/>

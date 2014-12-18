@@ -36,7 +36,7 @@ public class ColorableStudentArrayAdapter extends ArrayAdapter<String> {
 		if (taLocation != -1)
 			textView.setBackgroundColor(mColors[taLocation]);
 		else
-			textView.setBackgroundColor(getContext().getResources().getColor(R.color.background_color));
+			textView.setBackgroundColor(getContext().getResources().getColor(R.color.light_background_color));
 
 		return textView;
 	}

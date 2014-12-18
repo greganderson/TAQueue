@@ -26,7 +26,7 @@ public class ColorableTAArrayAdapter extends ArrayAdapter<String> {
 		textView.setBackgroundColor(mTAColors[position]);
 
 		if (textView.getText().toString().equals(getContext().getString(R.string.no_tas_on_duty)))
-			textView.setBackgroundColor(getContext().getResources().getColor(R.color.background_color));
+			textView.setBackgroundColor(getContext().getResources().getColor(R.color.light_background_color));
 
 		return textView;
 	}

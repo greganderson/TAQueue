@@ -2,6 +2,7 @@ package com.familybiz.greg.taqueue.view.login;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.Gravity;
@@ -49,6 +50,7 @@ public abstract class LoginFragment extends Fragment {
 		Button loginButton = new Button(getActivity());
 		loginButton.setText(getString(R.string.login_button));
 		loginButton.setBackgroundResource(R.drawable.custom_button);
+		loginButton.setTextColor(Color.BLACK);
 
 		rootLayout.addView(mNameTextBox, new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
@@ -62,6 +64,7 @@ public abstract class LoginFragment extends Fragment {
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		buttonParams.gravity = Gravity.CENTER_HORIZONTAL;
+		buttonParams.topMargin = 5;
 		rootLayout.addView(loginButton, buttonParams);
 
 
