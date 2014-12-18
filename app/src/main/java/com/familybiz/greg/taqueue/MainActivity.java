@@ -27,6 +27,7 @@ import com.familybiz.greg.taqueue.network.NetworkRequest;
 import com.familybiz.greg.taqueue.view.lists.InstructorListFragment;
 import com.familybiz.greg.taqueue.view.lists.QueueListFragment;
 import com.familybiz.greg.taqueue.view.lists.SchoolListFragment;
+import com.familybiz.greg.taqueue.view.login.LoginFragment;
 import com.familybiz.greg.taqueue.view.login.StudentLoginFragment;
 import com.familybiz.greg.taqueue.view.login.TALoginFragment;
 import com.familybiz.greg.taqueue.view.queue.QueueFragment;
@@ -94,8 +95,16 @@ public class MainActivity extends Activity implements
 	private String school_list_fragment_tag = "SCHOOL_LIST";
 	private String instructor_list_fragment_tag = "INSTRUCTOR_LIST";
 	private String queue_list_fragment_tag = "QUEUE_LIST";
+	private String login_screen_fragment_tag = "LOGIN_SCREEN";
+	private String student_queue_fragment_tag = "STUDENT_QUEUE";
+	private String ta_queue_fragment_tag = "TA_QUEUE";
 
 	private boolean mLoginFragmentAdded;
+
+	// Fragment was the fragment replaced by the connection error
+	private boolean mLastFragmentWasLogin;
+	private boolean mLastFragmentWasStudentQueue;
+	private boolean mLastFragmentWasTAQueue;
 
 	// ActionBar
 	private int mMoreInformationMenuItem = Menu.FIRST;
@@ -265,6 +274,30 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onNetworkTimeout() {
 		Toast.makeText(this, getString(R.string.network_timeout_toast), Toast.LENGTH_SHORT).show();
+
+		clearActionBarAndLoadingCircle();
+
+		// Check for login screen
+		LoginFragment loginFragment = (LoginFragment)getFragmentManager()
+				.findFragmentByTag(login_screen_fragment_tag);
+
+		// Check for student queue screen
+		StudentQueueFragment studentFragment = (StudentQueueFragment)getFragmentManager()
+				.findFragmentByTag(student_queue_fragment_tag);
+
+		// Check for TA queue screen
+		TAQueueFragment taFragment = (TAQueueFragment)getFragmentManager()
+				.findFragmentByTag(ta_queue_fragment_tag);
+
+		if (loginFragment != null && loginFragment.isVisible())
+			mLastFragmentWasLogin = true;
+
+		else if (studentFragment != null && studentFragment.isVisible())
+			mLastFragmentWasStudentQueue = true;
+
+		else if (taFragment != null && taFragment.isVisible())
+			mLastFragmentWasTAQueue = true;
+
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_layout, mNetworkTestFragment);
 		transaction.addToBackStack(null);
@@ -274,10 +307,20 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onNetworkReconnected() {
 		Toast.makeText(this, getString(R.string.reconnected_toast), Toast.LENGTH_SHORT).show();
-		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		/*
-		transaction.
-		*/
+
+		// Press back if fragment was the login fragment
+		if (mLastFragmentWasLogin) {
+			onQueueSelected(mSelectedQueue);
+			onBackPressed();
+		}
+		else if (mLastFragmentWasStudentQueue)
+			onStudentLoginSuccess((Student)mUser);
+		else if (mLastFragmentWasTAQueue)
+			onTALoginSuccess((TA)mUser);
+
+		mLastFragmentWasLogin = false;
+		mLastFragmentWasStudentQueue = false;
+		mLastFragmentWasTAQueue = false;
 	}
 
 	/**
@@ -312,7 +355,7 @@ public class MainActivity extends Activity implements
 		mSelectedQueue = queue;
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_layout, mStudentLoginFragment);
+		transaction.replace(R.id.fragment_layout, mStudentLoginFragment, login_screen_fragment_tag);
 		if (!mLoginFragmentAdded)
 			transaction.addToBackStack(null);
 		transaction.commit();
@@ -398,7 +441,7 @@ public class MainActivity extends Activity implements
 		invalidateOptionsMenu();
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_layout, mStudentQueueFragment);
+		transaction.replace(R.id.fragment_layout, mStudentQueueFragment, student_queue_fragment_tag);
 		transaction.addToBackStack(null);
 		transaction.commit();
 
@@ -429,7 +472,7 @@ public class MainActivity extends Activity implements
 		invalidateOptionsMenu();
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_layout, mTAQueueFragment);
+		transaction.replace(R.id.fragment_layout, mTAQueueFragment, ta_queue_fragment_tag);
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}

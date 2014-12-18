@@ -28,6 +28,8 @@ public class NetworkRequest {
 
 	// TODO: Consider changing all StringRequests to NetworkResponseRequest.
 
+	private int TIMEOUT_TIME = 2000;
+
 	private String BASE_URL = "http://nine.eng.utah.edu";
 
 	private RequestQueue mQueue;
@@ -69,7 +71,10 @@ public class NetworkRequest {
 					}
 				});
 
-		getRequest.setRetryPolicy(new DefaultRetryPolicy(2000, 1, 1.0f));
+		getRequest.setRetryPolicy(new DefaultRetryPolicy(
+				TIMEOUT_TIME,
+				DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
 		mQueue.add(getRequest);
 	}
@@ -103,7 +108,11 @@ public class NetworkRequest {
 						parseError(error.networkResponse);
 					}
 				});
-		postRequest.setRetryPolicy(new DefaultRetryPolicy(2000, 1, 1.0f));
+
+		postRequest.setRetryPolicy(new DefaultRetryPolicy(
+				TIMEOUT_TIME,
+				DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
 		mQueue.add(postRequest);
 	}
@@ -133,7 +142,11 @@ public class NetworkRequest {
 						parseError(error.networkResponse);
 					}
 				});
-		putRequest.setRetryPolicy(new DefaultRetryPolicy(2000, 1, 1.0f));
+
+		putRequest.setRetryPolicy(new DefaultRetryPolicy(
+				TIMEOUT_TIME,
+				DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
 		mQueue.add(putRequest);
 	}
@@ -163,7 +176,11 @@ public class NetworkRequest {
 						parseError(error.networkResponse);
 					}
 				});
-		deleteRequest.setRetryPolicy(new DefaultRetryPolicy(2000, 1, 1.0f));
+
+		deleteRequest.setRetryPolicy(new DefaultRetryPolicy(
+				TIMEOUT_TIME,
+				DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
 		mQueue.add(deleteRequest);
 	}

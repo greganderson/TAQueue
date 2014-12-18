@@ -1,12 +1,16 @@
 package com.familybiz.greg.taqueue;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 /**
  * Created by Greg Anderson
@@ -34,8 +38,16 @@ public class NetworkTestFragment extends Fragment {
 		retry.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (mOnNetworkReconnectedListener != null)
-					mOnNetworkReconnectedListener.onNetworkReconnected();
+				ConnectivityManager manager = (ConnectivityManager)getActivity()
+						.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+				NetworkInfo activeNetworkInfo = manager.getActiveNetworkInfo();
+				if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+					if (mOnNetworkReconnectedListener != null)
+						mOnNetworkReconnectedListener.onNetworkReconnected();
+				}
+				else
+					Toast.makeText(getActivity(), getString(R.string.network_timeout_toast), Toast.LENGTH_SHORT).show();
 			}
 		});
 

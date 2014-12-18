@@ -68,6 +68,8 @@
     <string name="email_greg_button">Email Greg</string>
     <string name="email_parker_button">Email Parker</string>
     <string name="start_web_client_button">Go to Web Client</string>
+
+    <!-- Network connection error -->
     <string name="network_timeout_toast">Could not connect to server.</string>
     <string name="reconnected_toast">Reconnected</string>
     <string name="retry_connection_button">Retry Connection</string>
