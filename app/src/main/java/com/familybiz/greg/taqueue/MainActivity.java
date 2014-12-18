@@ -87,6 +87,10 @@ public class MainActivity extends Activity implements
 	private StudentQueueFragment mStudentQueueFragment;
 	private TAQueueFragment mTAQueueFragment;
 	private boolean mOnQueueScreen; // Used for overriding the back button
+	// Fragment tags
+	private String school_list_fragment_tag = "SCHOOL_LIST";
+	private String instructor_list_fragment_tag = "INSTRUCTOR_LIST";
+	private String queue_list_fragment_tag = "QUEUE_LIST";
 
 	private boolean mLoginFragmentAdded;
 
@@ -156,7 +160,7 @@ public class MainActivity extends Activity implements
 		mTAQueueFragment.setOnSignOutListener(this);
 
 		FragmentTransaction addTransaction = getFragmentManager().beginTransaction();
-		addTransaction.add(R.id.fragment_layout, mSchoolListFragment);
+		addTransaction.add(R.id.fragment_layout, mSchoolListFragment, school_list_fragment_tag);
 		addTransaction.commit();
 	}
 
@@ -259,7 +263,7 @@ public class MainActivity extends Activity implements
 		mSelectedSchool = school;
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_layout, mInstructorListFragment);
+		transaction.replace(R.id.fragment_layout, mInstructorListFragment, instructor_list_fragment_tag);
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
@@ -273,7 +277,7 @@ public class MainActivity extends Activity implements
 		mSelectedInstructor = instructor;
 
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_layout, mQueueListFragment);
+		transaction.replace(R.id.fragment_layout, mQueueListFragment, queue_list_fragment_tag);
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
@@ -318,6 +322,8 @@ public class MainActivity extends Activity implements
 		mLoginFragmentAdded = false;
 
 		clearActionBarAndLoadingCircle();
+
+		deleteSavedFile();
 
 		super.onBackPressed();
 	}
@@ -451,12 +457,42 @@ public class MainActivity extends Activity implements
 		try {
 			JSONObject data = new JSONObject();
 
-			if (mSelectedSchool != null)
-				data.put(SELECTED_SCHOOL, mSelectedSchool.getName());
-			if (mSelectedInstructor != null)
-				data.put(SELECTED_INSTRUCTOR, mSelectedInstructor.getName());
-			if  (mSelectedQueue != null)
-				data.put(SELECTED_QUEUE, mSelectedQueue.getClassNumber());
+			// Get the fragments
+
+			// School list screen
+			SchoolListFragment schoolListFragment = (SchoolListFragment)getFragmentManager()
+					.findFragmentByTag(school_list_fragment_tag);
+
+			// Instructor list screen
+			InstructorListFragment instructorListFragment = (InstructorListFragment)getFragmentManager()
+					.findFragmentByTag(instructor_list_fragment_tag);
+
+			// Queue list screen
+			QueueListFragment queueListFragment = (QueueListFragment)getFragmentManager()
+					.findFragmentByTag(queue_list_fragment_tag);
+
+			if (schoolListFragment.isVisible()) {
+				// Don't save anything
+			}
+			else if (instructorListFragment.isVisible()) {
+				if (mSelectedSchool != null)
+					data.put(SELECTED_SCHOOL, mSelectedSchool.getName());
+			}
+			else if (queueListFragment.isVisible()) {
+				if (mSelectedSchool != null)
+					data.put(SELECTED_SCHOOL, mSelectedSchool.getName());
+				if (mSelectedInstructor != null)
+					data.put(SELECTED_INSTRUCTOR, mSelectedInstructor.getName());
+			}
+			// Anything else, save everything
+			else {
+				if (mSelectedSchool != null)
+					data.put(SELECTED_SCHOOL, mSelectedSchool.getName());
+				if (mSelectedInstructor != null)
+					data.put(SELECTED_INSTRUCTOR, mSelectedInstructor.getName());
+				if  (mSelectedQueue != null)
+					data.put(SELECTED_QUEUE, mSelectedQueue.getClassNumber());
+			}
 
 			if (mUser != null) {
 				data.put(USER_TYPE, mUser.getUserType());
@@ -527,8 +563,7 @@ public class MainActivity extends Activity implements
 			}
 
 			// Clear out file so it doesn't get loaded again unless it gets saved again
-			if (!file.delete())
-				Toast.makeText(this, "Saved file not deleted", Toast.LENGTH_SHORT).show();
+			deleteSavedFile();
 		}
 		catch (FileNotFoundException e) {
 			Log.i("LOAD", "Error loading saved file, maybe there was nothing saved.");
@@ -539,6 +574,10 @@ public class MainActivity extends Activity implements
 		catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void deleteSavedFile() {
+		new File(getFilesDir().getPath() + SAVED_DATA_FILE_NAME).delete();
 	}
 
 
