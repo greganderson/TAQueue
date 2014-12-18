@@ -206,12 +206,12 @@ public class TAQueueFragment extends QueueFragment {
 
 		ActionBar.Tab tab = MainActivity.mActionBar.getTabAt(0);
 		if (mQueue.isActive()) {
-			if (!tab.getText().equals(getString(R.string.activate_tab_label)))
-				tab.setText(getString(R.string.activate_tab_label));
-		}
-		else {
 			if (tab.getText().equals(getString(R.string.activate_tab_label)))
 				tab.setText(getString(R.string.deactivate_tab_label));
+		}
+		else {
+			if (!tab.getText().equals(getString(R.string.activate_tab_label)))
+				tab.setText(getString(R.string.activate_tab_label));
 		}
 
 		// Queue frozen
