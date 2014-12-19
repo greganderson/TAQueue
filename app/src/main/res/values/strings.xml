@@ -80,5 +80,6 @@
     <string name="android_github_url">https://github.com/greganderson/TAQueue</string>
     <string name="web_service_github_url">https://github.com/urails/ta_queue</string>
     <string name="web_client_url">http://nine.eng.utah.edu/</string>
+    <string name="error_from_server_with_no_message">Error occurred, no message received from server.</string>
 
 </resources>

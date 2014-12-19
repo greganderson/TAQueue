@@ -532,8 +532,7 @@ public class MainActivity extends Activity implements
 		Set<String> messages = new HashSet<String>();
 
 		try {
-            if(errors != null && messages != null)
-            {
+            if(errors != null) {
                 for (int i = 0; i < errors.length(); i++)
                     messages.add(errors.getString(i));
             }
@@ -542,8 +541,12 @@ public class MainActivity extends Activity implements
 			e.printStackTrace();
 		}
 
-		for (String message : messages)
-			Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+		// Check if no error messages came back from the server
+		if (messages.isEmpty())
+			Toast.makeText(this, getString(R.string.error_from_server_with_no_message), Toast.LENGTH_SHORT).show();
+		else
+			for (String message : messages)
+				Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 
 		// Clear the loading circle if it was going
 		ProgressBar loadingCircle = (ProgressBar)findViewById(R.id.loading_circle);
