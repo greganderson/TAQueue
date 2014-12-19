@@ -15,6 +15,10 @@ import org.json.JSONObject;
 public class StudentRequest implements NetworkRequest.OnJsonObjectReceivedListener {
 
 	public StudentRequest() {
+		addListener();
+	}
+
+	public void addListener() {
 		MainActivity.NETWORK_REQUEST.addOnJsonObjectReceivedListener(this);
 	}
 
