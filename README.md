@@ -1,8 +1,6 @@
 TA Queue
 ========
 
---------
-
 Currently hosted at [http://nine.eng.utah.edu/](http://nine.eng.utah.edu/ "TA Queue Web Client")
 
 The University of Utah hosts this service freely to other universities/institutions.
@@ -49,7 +47,7 @@ Create an issue on the github repository.
 --------
 
 ### Contact
-uofu.ta.queue@gmail.com.
+uofu.ta.queue@gmail.com
 
 ### Authors
 [Web client](https://github.com/urails/ta_queue) - Parker Wightman
