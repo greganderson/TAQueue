@@ -532,8 +532,11 @@ public class MainActivity extends Activity implements
 		Set<String> messages = new HashSet<String>();
 
 		try {
-			for (int i = 0; i < errors.length(); i++)
-				messages.add(errors.getString(i));
+            if(errors != null && messages != null)
+            {
+                for (int i = 0; i < errors.length(); i++)
+                    messages.add(errors.getString(i));
+            }
 		}
 		catch (JSONException e) {
 			e.printStackTrace();
