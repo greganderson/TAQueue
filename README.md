@@ -44,7 +44,8 @@ Latest code can be found on the project's [github repository](https://github.com
 ### Bug reports or feature requests
 Create an issue on the github repository.
 
---------
+### Known bugs
+The app tends to do weird things when you have a poor internet connection.
 
 ### Contact
 uofu.ta.queue@gmail.com
