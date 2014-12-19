@@ -1,5 +1,7 @@
 TA Queue
 ========
+--------
+
 
 Currently hosted at [http://nine.eng.utah.edu/](http://nine.eng.utah.edu/ "TA Queue Web Client")
 
@@ -30,9 +32,8 @@ This is a gradle app that was built using Android Studio v0.8.14, so the
 instructions will be for Android Studio.
 
 1. Download the code from [github](https://github.com/greganderson/TAQueue)
-2. Open code with Android Studio and sync with Gradle (there should be a button
-on the top bar for that)
-3. Once synced, you should be able to build the project and install onto your
+2. Open code with Android Studio and make project
+3. Once built, you should be able to install the project onto your
 emulator/device.
 
 ### How to get latest code
