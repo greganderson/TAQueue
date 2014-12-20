@@ -13,7 +13,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -80,6 +83,7 @@ public class MainActivity extends Activity implements
 	private String SELECTED_SCHOOL = "selected_school";
 	private String SELECTED_INSTRUCTOR = "selected_instructor";
 	private String SELECTED_QUEUE = "selected_queue";
+	private String DO_NOT_SHOW_OPENING_DIALOG = "do_not_show_opening_dialog";
 
 	// Fragments
 	private SchoolListFragment mSchoolListFragment;
@@ -120,6 +124,7 @@ public class MainActivity extends Activity implements
 
 	// Current user data
 	private static User mUser;
+	private boolean mDoNotShowOpeningDialog;
 
 	// Options menu for changing what is shown depending on which screen the user is on
 	private int mTAOptionsMenuQueueStatus = Menu.FIRST;
@@ -128,6 +133,27 @@ public class MainActivity extends Activity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Load what the user had to say about the opening dialog.
+		checkShowOpeningDialog();
+
+		if (!mDoNotShowOpeningDialog) {
+			final LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.opening_dialog_text, null);
+			Button okayButton = new Button(this);
+			okayButton.setText(getString(R.string.okay_button));
+			new AlertDialog.Builder(this)
+					.setTitle(getString(R.string.opening_dialog_box_title))
+					.setView(layout)
+					.setCancelable(true)
+					.setPositiveButton(getString(R.string.okay_button), new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialogInterface, int i) {
+							CheckBox checker = (CheckBox) layout.findViewById(R.id.do_not_show_message_checkbox);
+							mDoNotShowOpeningDialog = checker.isChecked();
+						}
+					})
+					.show();
+		}
 
 		mOnQueueScreen = false;
 		mLoginFragmentAdded = false;
@@ -557,6 +583,9 @@ public class MainActivity extends Activity implements
 		try {
 			JSONObject data = new JSONObject();
 
+			// Save what the user had to say about the opening dialog
+			data.put(DO_NOT_SHOW_OPENING_DIALOG, mDoNotShowOpeningDialog);
+
 			// Get the fragments
 
 			// School list screen
@@ -667,6 +696,30 @@ public class MainActivity extends Activity implements
 
 			// Clear out file so it doesn't get loaded again unless it gets saved again
 			deleteSavedFile();
+		}
+		catch (FileNotFoundException e) {
+			Log.i("LOAD", "Error loading saved file, maybe there was nothing saved.");
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void checkShowOpeningDialog() {
+		try {
+			File file = new File(getFilesDir().getPath() + SAVED_DATA_FILE_NAME);
+			FileReader fileReader = new FileReader(file);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			String data = bufferedReader.readLine();
+			bufferedReader.close();
+
+			JSONObject dataJson = new JSONObject(data);
+
+			if (dataJson.has(DO_NOT_SHOW_OPENING_DIALOG))
+				mDoNotShowOpeningDialog = dataJson.getBoolean(DO_NOT_SHOW_OPENING_DIALOG);
 		}
 		catch (FileNotFoundException e) {
 			Log.i("LOAD", "Error loading saved file, maybe there was nothing saved.");

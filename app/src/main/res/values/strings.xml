@@ -4,6 +4,19 @@
     <string name="app_name">TA Queue</string>
     <string name="action_settings">Settings</string>
 
+    <string name="opening_dialog_box_title">Welcome!</string>
+    <string name="opening_dialog_box">
+    Welcome to the TA Queue on Android!\n\n
+
+    As this app is in early development, I want to make you
+    aware of a known bug.  First, this app has trouble if you have a poor connection.  If the
+    schools don\'t load on the first page, make sure your connection is good and restart the app.
+    If you find any other bugs or have any feature requests, post them to the GitHub repository for
+    this project at https://github.com/greganderson/TAQueue in the issues section.
+    </string>
+    <string name="checkbox_message">Do not show this message again</string>
+    <string name="okay_button">Ok</string>
+
     <!-- Lists -->
     <string name="school_list_label">Schools</string>
     <string name="instructor_list_label">Instructors</string>
