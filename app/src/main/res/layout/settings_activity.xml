@@ -4,6 +4,10 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <include layout="@layout/list_item" />
+    <include layout="@layout/list_item"
+        android:id="@+id/base_url"/>
+
+    <include layout="@layout/list_item"
+             android:id="@+id/query_interval"/>
 
 </LinearLayout>

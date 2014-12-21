@@ -72,6 +72,8 @@ public class MainActivity extends Activity implements
 	// Global access to the networking class, TODO: Which might be a bad idea
 	public static NetworkRequest NETWORK_REQUEST;
 
+	public static int QUERY_INTERVAL = 1000;
+
 	private String SAVED_DATA_FILE_NAME = "data.txt";
 
 	// Used in saving and reading from file
@@ -241,9 +243,9 @@ public class MainActivity extends Activity implements
 			startActivity(intent);
 		}
 
-		// Only available if user is a TA
-		// Queue status
-		else if (title.equals(getString(R.string.queue_status_options_menu_label))) {
+		// Only available if user is a student
+		// Chat
+		else if (title.equals(getString(R.string.cancel_label))) {
 			final EditText statusView = new EditText(this);
 
 			// Set the maximum number of characters allowed
@@ -297,6 +299,12 @@ public class MainActivity extends Activity implements
 			return true;
 		}
 
+		// Only available if user is a TA
+		// Queue status
+		else if (title.equals(getString(R.string.queue_status_options_menu_label))) {
+
+		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -319,6 +327,10 @@ public class MainActivity extends Activity implements
 		if (mUser != null && mUser.getUserType().equals(User.TA)) {
 			menu.add(0, mTAOptionsMenuQueueStatus, 0, getString(R.string.queue_status_options_menu_label));
 			menu.add(0, mTAOptionsMenuIsQuestionBased, 0, getString(R.string.ta_options_menu_is_question_based_label));
+		}
+		// Add the Student actions
+		if (mUser != null && mUser.getUserType().equals(User.STUDENT)) {
+			menu.add(0, mTAOptionsMenuQueueStatus, 0, getString(R.string.chat_label));
 		}
 		return super.onPrepareOptionsMenu(menu);
 	}

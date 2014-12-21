@@ -174,6 +174,7 @@ public abstract class QueueFragment extends Fragment implements
 		if (!mReadyToRefresh)
 			return;
 		mTimer.schedule(new RefreshQueue(), 1000);
+		//mTimer.schedule(new RefreshQueue(), MainActivity.QUERY_INTERVAL);
 	}
 
 	public QueueData getQueue() {

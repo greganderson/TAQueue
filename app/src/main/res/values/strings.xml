@@ -48,6 +48,7 @@
     <!-- Student specific -->
     <string name="enter_queue_button_text">Enter Queue</string>
     <string name="exit_queue_button_text">Exit Queue</string>
+    <string name="chat_label">Chat</string>
 
     <!-- TA specific -->
     <string name="deactivate_tab_label">Deactivate</string>
